@@ -1,0 +1,2778 @@
+https://blog.csdn.net/tmwiajd/article/details/42592053?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-42592053-blog-41621571.pc_relevant_paycolumn_v3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-42592053-blog-41621571.pc_relevant_paycolumn_v3&utm_relevant_index=2
+
+#### hostapd配置文件########################################## ####
+＃空行和以＃开头的行将被忽略
+
+＃AP网络设备名称（不带“ ap”后缀，即wlan0将wlan0ap用于
+＃使用Host AP驱动程序的管理帧）; wlan0有许多nl80211驱动程序
+＃注意：该属性可以被'-i'随附的值覆盖
+＃命令行参数。
+接口= wlan0
+
+＃在atheros和nl80211驱动程序接口的情况下，附加
+＃配置参数bridge可用于通知hostapd
+＃接口包含在网桥中。此参数不适用于主机AP
+＃司机。如果未设置bridge参数，驱动程序将自动
+＃找出网桥接口（假设已启用sysfs并将其安装到
+＃/ sys），并且可能不需要此参数。
+＃
+＃对于nl80211，此参数可用于请求将AP接口设置为
+＃自动添加到网桥（brctl可能在hostapd之前拒绝这样做
+＃已开始更改接口模式）。如果需要，桥梁
+＃接口也已创建。
+＃bridge = br0
+
+＃驱动程序接口类型（hostap / wired / none / nl80211 / bsd）;
+＃默认：hostap）。nl80211与所有Linux mac80211驱动程序一起使用。
+＃如果将hostapd用作执行以下操作的独立RADIUS服务器，请使用driver = none
+＃无法控制任何无线/有线驱动程序。
+＃driver = hostap
+
+＃驱动程序接口参数（主要供开发测试使用）
+＃driver_params = <参数>
+
+＃hostapd事件记录器配置
+＃
+＃两种输出方法：syslog和stdout（仅在不分叉到
+＃ 背景）。
+＃
+＃模块位字段（将记录的模块的ORed位字段； -1 =全部
+＃个模块）：
+＃位0（1）= IEEE 802.11
+＃位1（2）= IEEE 802.1X
+＃位2（4）= RADIUS
+＃位3（8）= WPA
+＃位4（16）=驱动程序接口
+＃位6（64）= MLME
+＃
+＃级（已记录事件的最小值）：
+＃0 =详细调试
+＃1 =调试
+＃2 =参考消息
+＃3 =通知
+＃4 =警告
+＃
+logger_syslog = -1
+logger_syslog_level = 2
+logger_stdout = -1
+logger_stdout_level = 2
+
+＃用于独立控制程序的接口。如果指定了此项，则hostapd
+＃将创建此目录和UNIX域套接字以侦听请求
+＃从外部程序（CLI / GUI等）获取状态信息和
+＃配置。套接字文件将根据接口名称命名，因此
+＃如果更多，则可以同时运行多个hostapd进程/接口
+＃使用了一个以上的接口。
+＃/ var / run / hostapd是套接字的推荐目录，默认情况下，
+＃hostapd_cli在尝试与hostapd连接时将使用它。
+ctrl_interface = / var / run / hostapd
+
+＃控制界面的访问控制可以通过设置
+＃目录，仅允许组成员使用套接字。这样，就是
+＃可以以root身份运行hostapd（因为它需要更改网络
+＃配置并打开原始套接字），并且仍然允许将GUI / CLI组件
+＃以非root用户身份运行。但是，由于控制界面可用于
+＃更改网络配置，这种访问需要在许多情况下得到保护
+＃个案例。默认情况下，hostapd配置为使用gid 0（root）。如果你
+＃希望允许非root用户使用contron界面，添加一个新组
+＃并更改此值以与该组匹配。添加应具有的用户
+＃控制接口对此组的访问。
+＃
+＃此变量可以是组名或gid。
+＃ctrl_interface_group =车轮
+ctrl_interface_group = 0
+
+
+##### IEEE 802.11相关配置#######################################
+
+＃在IEEE 802.11管理帧中使用的SSID
+ssid = test
+＃用于配置SSID的其他格式
+＃（双引号字符串，十六进制转储，printf转义的字符串）
+＃ssid2 =“ test”
+＃ssid2 = 74657374
+＃ssid2 = P“你好\这里”
+
+＃UTF-8 SSID：是否要使用UTF-8编码解释SSID
+＃utf8_ssid = 1
+
+＃国家/地区代码（ISO / IEC 3166-1）。用于设置监管域。
+＃根据需要设置，以指示设备在哪个国家/地区工作。
+＃这会限制可用的频道和发射功率。
+＃这两个八位字节用作国家/地区字符串的前两个八位字节
+＃（dot11CountryString）
+＃country_code =美国
+
+＃国家/地区字符串（dot11CountryString）的第三个八位字节
+＃此参数用于设置国家/地区字符串的第三个八位字节。
+＃
+＃当前频段和国家/地区的所有环境（默认）
+＃country3 = 0x20
+＃仅限户外环境
+＃country3 = 0x4f
+＃仅室内环境
+＃country3 = 0x49
+＃非国家实体（country_code = XX）
+＃country3 = 0x58
+＃IEEE 802.11标准附件E表指示：0x01 .. 0x1f
+＃附件E，表E-4（全局操作类）
+＃country3 = 0x04
+
+＃启用IEEE 802.11d。这将公布country_code和允许的集合
+＃信道和发射功率水平基于法规限制。的
+＃country_code设置必须使用正确的国家/地区进行配置
+＃IEEE 802.11d功能。
+＃（预设值：0 =停用）
+＃ieee80211d = 1
+
+＃使能IEEE 802.11h。如果启用，可以启用雷达检测和DFS支持
+＃个可用。在大多数国家/地区，室外5 GHz频道需要DFS支持
+＃ 世界的。仅在ieee80211d = 1时可以使用。
+＃（预设值：0 =停用）
+＃ieee80211h = 1
+
+＃将功率约束元素添加到信标和探测响应帧
+＃此配置选项在适用时和国家/地区添加“功率约束”元素
+＃元素已添加。发射功率需要功率约束元素
+＃ 控制。仅在ieee80211d = 1时可以使用。
+＃有效值为0..255。
+＃local_pwr_constraint = 3
+
+＃在“能力信息”字段中设置“频谱管理”子字段。
+＃此配置选项强制设置“频谱管理”位。当这个
+＃选项未设置，频谱管理位的值取决于是否
+＃监管机构要求DFS或TPC。只能与
+＃ieee80211d = 1并且配置了local_pwr_constraint。
+＃spectrum_mgmt_required = 1
+
+＃工作模式（a = IEEE 802.11a（5 GHz），b = IEEE 802.11b（2.4 GHz），
+＃g = IEEE 802.11g（2.4 GHz），ad = IEEE 802.11ad（60 GHz）；使用a / g选项
+＃以及IEEE 802.11n（HT），以指定频段）。对于IEEE 802.11ac（VHT），这
+＃需要设置为hw_mode = a。对于6 GHz的IEEE 802.11ax（HE），这需要
+＃设置为hw_mode = a。使用ACS（请参阅通道参数）时，
+＃特殊值“ any”可用于表示可以使用任何支持带。
+＃目前只有具有以下功能的驱动程序才支持此特殊情况
+＃使用卸载的ACS。
+＃默认：IEEE 802.11b
+hw_mode = g
+
+＃通道号（IEEE 802.11）
+＃（默认值：0，即未设置）
+＃请注意，某些驱动程序不使用hostapd和
+＃通道将需要与iwconfig分开配置。
+＃
+＃如果启用了CONFIG_ACS构建选项，则可以选择通道
+＃在运行时通过设置channel = acs_survey或channel = 0自动设置
+＃将启用基于ACS调查的算法。
+频道= 1
+
+＃全局操作等级（IEEE 802.11，附件E，表E-4）
+＃此选项允许hostapd指定通道的操作类别
+＃配置了channel参数。channel和op_class一起可以
+＃唯一地标识包括6 GHz频带在内的不同频带上的信道。
+＃op_class = 131
+
+＃ACS调整-自动频道选择
+＃参见：http://wireless.kernel.org/en/users/Documentation/acs
+＃
+＃您可以使用以下变量来自定义ACS调查算法：
+＃
+＃acs_num_scans要求为1..100-要执行的扫描次数
+＃用于触发基础设备驱动程序的调查数据收集。
+＃扫描是被动的，通常需要100毫秒以上的时间（具体取决于
+给定hw_mode的每个可用通道上的＃驱动程序）。增加此值
+＃表示牺牲启动时间并收集更多的wrt通道数据
+＃干扰可能有助于选择更好的频道。这也可以帮助罚款
+＃如果驱动程序的扫描停留时间不同，请调整ACS扫描时间。
+＃
+＃acs_chan_bias是由<channel>：<bias>对组成的空格列表。有可能
+＃用于增加（或减少）特定频道的可能性
+＃由ACS算法选择。每个通道的总干扰因子
+＃在找到具有以下值的通道之前，先乘以指定的偏置值
+＃最小值。换句话说，介于0.0和1.0之间的值可用于
+＃使频道更容易被选中，而值大于1.0则使
+＃指定的频道不太可能被选择。可以使用，例如
+＃常用的2.4 GHz频段信道1、6和11（默认
+＃如果未指定acs_chan_bias参数，则在2.4 GHz频段上的行为）。
+＃
+＃默认值：
+＃acs_num_scans = 5
+＃acs_chan_bias = 1：0.8 6：0.8 11：0.8
+
+＃频道列表限制。此选项允许hostapd选择以下选项之一
+＃提供了应该自动选择频道的频道。
+＃频道列表可以使用连字符（'-'）或单独提供
+＃个通道可以用空格（''）分隔的值指定
+＃默认：所选hw_mode允许的所有通道
+＃chanlist = 100104108112116
+＃chanlist = 1 6 11-13
+
+＃从ACS排除DFS通道
+＃此选项可用于从ACS通道列表中排除所有DFS通道
+＃如果驱动程序支持DFS通道。
+＃acs_exclude_dfs = 1
+
+＃信标间隔，以kus（1.024 ms）为单位（默认值：100;范围15..65535）
+beacon_int = 100
+
+＃DTIM（传递交通信息消息）时间段（范围1..255）：
+＃DTIM之间的信标数量（1 =每个信标都包含DTIM元素）
+＃（默认值：2）
+dtim_period = 2
+
+＃电台表中允许的最大电台数。新站将
+＃工作站表已满后拒绝。IEEE 802.11的限制为2007
+＃个不同的关联ID，因此此数字不应大于该数字。
+＃（默认值：2007）
+max_num_sta = 255
+
+＃RTS / CTS阈值；-1 =禁用（默认）; 范围-1..65535
+＃如果hostapd.conf中不包含此字段，则hostapd将无法控制
+＃RTS阈值和'iwconfig wlan＃rts <val>'可以用来设置它。
+rts_threshold = -1
+
+＃碎片阈值；-1 =禁用（默认）; 范围-1，256..2346
+＃如果hostapd.conf中不包含此字段，则hostapd将无法控制
+＃碎片阈值和'iwconfig wlan＃frag <val>'可用于设置
+＃它。
+fragm_threshold = -1
+
+＃费率配置
+＃默认为启用硬件支持的所有速率。这个配置
+＃项可过滤此列表，以便仅保留列出的费率
+＃在列表中。如果列表为空，则使用所有费率。这个清单可以有
+＃不在硬件支持的速率列表中的条目（此类条目
+＃被忽略）。该列表中的条目以100 kbps为单位，即11 Mbps = 110。
+＃如果存在此项目，则至少一个费率必须与费率匹配
+＃硬件支持。
+＃默认：使用最常用的支持的速率设置
+＃hw_mode（即，大多数情况下可以从配置文件中删除此行
+＃个案例）
+＃supported_rates = 10 20 55 110 60 90120 180240240360480540
+
+＃基本费率设置配置
+＃基本速率集中包含的速率列表（以100 kbps为单位）。
+＃如果不包括此项，通常使用合理的默认设置。
+＃basic_rates = 10 20
+＃basic_rates = 10 20 55110
+＃basic_rates = 60120240
+
+＃信标帧发送速率配置
+＃设置用于发送信标帧的TX速率。如果这个项目是
+＃不包括在内，将使用驱动程序默认速率（可能是最低速率）。
+＃旧版（CCK / OFDM速率）：
+＃beacon_rate = <传统速率（100 kbps）>
+＃ H T：
+＃beacon_rate = ht：<HT MCS>
+＃VHT：
+＃beacon_rate = vht：<VHT MCS>
+＃
+＃例如，对于1 Mbps，beacon_rate = 10；对于6 Mbps（OFDM），beacon_rate = 60。
+＃beacon_rate = 10
+
+＃简短的序言
+＃此参数可用于启用短前导码的可选使用
+＃以2 Mbps，5.5 Mbps和11 Mbps发送的帧数，以提高网络性能。
+＃这仅适用于IEEE 802.11b兼容网络，并且应该仅适用于
+＃如果本地硬件支持使用短前导码，则启用。如果有
+＃关联的STA不支持短前导，将使用短前导
+＃动态禁用（当此类STA解除关联时启用）。
+＃0 =不允许使用短前导码（默认）
+＃1 =允许使用简短的前导
+＃preamble = 1
+
+＃基于工作站MAC地址的身份验证
+＃请注意，这种访问控制需要使用以下驱动程序
+＃hostapd负责管理帧处理，因此，这可以是
+＃与driver = hostap或driver = nl80211一起使用，但不与driver = atheros一起使用。
+＃0 =接受，除非在拒绝列表中
+＃1 =拒绝，除非在接受列表中
+＃2 =使用外部RADIUS服务器（首先搜索接受/拒绝列表）
+macaddr_acl = 0
+
+＃从不同文件中读取接受/拒绝列表（包含
+＃个MAC地址，每行一个）。使用绝对路径名来确保
+＃文件可以在重新加载SIGHUP时读取。
+＃accept_mac_file = / etc / hostapd.accept
+＃deny_mac_file = / etc / hostapd.deny
+
+＃IEEE 802.11指定两种身份验证算法。hostapd可以是
+＃配置为允许这两个或仅允许一个。开放系统认证
+＃应该与IEEE 802.1X一起使用。
+＃允许的认证算法的位字段：
+＃位0 =开放系统认证
+＃位1 =共享密钥身份验证（需要WEP）
+auth_algs = 3
+
+＃在信标中发送空的SSID，并忽略不发送的探测请求帧
+＃指定完整的SSID，即要求工作站知道SSID。
+＃默认值：禁用（0）
+＃1 =在信标中发送空（length = 0）SSID，并忽略对
+＃广播SSID
+＃2 =清除SSID（ASCII 0），但保留原始长度（这可能是必需的
+＃与一些不支持空SSID的客户端），并忽略探测
+＃请求广播SSID
+ignore_broadcast_ssid = 0
+
+＃如果存在，请不要回复来自未关联的STA的广播探测请求帧
+＃没有空间可容纳其他工作站（max_num_sta）。这可以用来
+＃如果关联，则阻止STA尝试与此AP关联
+由于最大STA限制，＃将被拒绝。
+＃默认值：0（禁用）
+＃no_probe_resp_if_max_sta = 0
+
+＃信标和探测响应帧的其他供应商特定元素
+＃此参数可用于将其他特定于供应商的元素添加到
+＃信标和探测响应帧的末尾。这些的格式
+＃个元素是原始信息元素的十六进制转储（id + len + payload用于
+＃个或多个元素）
+＃vendor_elements = dd0411223301
+
+＃（Re）Association Response框架的其他特定于供应商的元素
+＃此参数可用于将其他特定于供应商的元素添加到
+＃（Re）Association Response帧的末尾。这些的格式
+＃个元素是原始信息元素的十六进制转储（id + len + payload用于
+＃个或多个元素）
+＃assocresp_elements = dd0411223301
+
+＃TX队列参数（EDCF /突发）
+＃tx_queue_ <队列名称> _ <param>
+＃队列：data0，data1，data2，data3
+＃（data0是最高优先级的队列）
+＃参数：
+＃aifs：AIFS（默认2）
+＃cwmin：cwMin（1、3、7、15、31、63、127、255、511、1023、2047、4095、8191，
+＃16383，32767）
+＃cwmax：cwMax（与cwMin相同，cwMax> = cwMin）
+＃突发：最大长度（以毫秒为单位，精度最高为0.1 ms）
+＃爆裂
+＃
+＃默认WMM参数（IEEE 802.11草案; 11-03-0504-03-000e）：
+＃这些参数由接入点在传输帧时使用
+＃给客户。
+＃
+＃低优先级/ AC_BK =背景
+＃tx_queue_data3_aifs = 7
+＃tx_queue_data3_cwmin = 15
+＃tx_queue_data3_cwmax = 1023
+＃tx_queue_data3_burst = 0
+＃注：对于IEEE 802.11b模式：cWmin = 31 cWmax = 1023突发= 0
+＃
+＃正常优先级/ AC_BE =尽力而为
+＃tx_queue_data2_aifs = 3
+＃tx_queue_data2_cwmin = 15
+＃tx_queue_data2_cwmax = 63
+＃tx_queue_data2_burst = 0
+＃注意：对于IEEE 802.11b模式：cWmin = 31 cWmax = 127突发= 0
+＃
+＃高优先级/ AC_VI =视频
+＃tx_queue_data1_aifs = 1
+＃tx_queue_data1_cwmin = 7
+＃tx_queue_data1_cwmax = 15
+＃tx_queue_data1_burst = 3.0
+＃注意：对于IEEE 802.11b模式：cWmin = 15 cWmax = 31burst = 6.0
+＃
+＃最高优先级/ AC_VO =语音
+＃tx_queue_data0_aifs = 1
+＃tx_queue_data0_cwmin = 3
+＃tx_queue_data0_cwmax = 7
+＃tx_queue_data0_burst = 1.5
+＃注：对于IEEE 802.11b模式：cWmin = 7 cWmax = 15突发= 3.3
+
+＃802.1D标签（= UP）到AC的映射
+＃WMM指定以下数据帧到不同AC的映射。此映射
+＃可以使用Linux QoS / tc和sch_pktpri.o模块进行配置。
+＃802.1D标签802.1D名称访问类别WMM名称
+＃1 BK AC_BK背景
+＃2-AC_BK背景
+＃0 BE AC_BE尽力而为
+＃3 EE AC_BE尽力而为
+＃4 CL AC_VI视频
+＃5 VI AC_VI视频
+＃6 VO AC_VO语音
+＃7 NC AC_VO语音
+＃没有优先级信息的数据帧：AC_BE
+＃管理框架：AC_VO
+＃PS轮询帧：AC_BE
+
+＃默认WMM参数（IEEE 802.11草案; 11-03-0504-03-000e）：
+＃用于802.11a或802.11g网络
+＃这些参数在关联时会发送给WMM客户端。
+＃参数将由WMM客户端用于传输到
+＃ 切入点。
+＃
+＃注意-txop_limit以32微秒为单位
+＃注意-acm是准入控制强制标志。0 =禁止进入控制
+＃必填，1 =必填
+＃注意-这里的cwMin和cmMax是指数形式。使用的实际CW值
+＃将是（2 ^ n）-1，其中n是此处给出的值。这些允许的范围
+＃wmm_ac _ ?? _ {cwmin，cwmax}为0..15，且cwmax> = cwmin。
+＃
+wmm_enabled = 1
+＃
+＃WMM-PS计划外的自动省电交付[U-APSD]
+＃如果hostapd外部支持U-APSD（例如，固件/驱动程序），则启用此标志
+＃uapsd_advertisement_enabled = 1
+＃
+＃低优先级/ AC_BK =背景
+wmm_ac_bk_cwmin = 4
+wmm_ac_bk_cwmax = 10
+wmm_ac_bk_aifs = 7
+wmm_ac_bk_txop_limit = 0
+wmm_ac_bk_acm = 0
+＃注意：对于IEEE 802.11b模式：cWmin = 5 cWmax = 10
+＃
+＃正常优先级/ AC_BE =尽力而为
+wmm_ac_be_aifs = 3
+wmm_ac_be_cwmin = 4
+wmm_ac_be_cwmax = 10
+wmm_ac_be_txop_limit = 0
+wmm_ac_be_acm = 0
+＃注意：对于IEEE 802.11b模式：cWmin = 5 cWmax = 7
+＃
+＃高优先级/ AC_VI =视频
+wmm_ac_vi_aifs = 2
+wmm_ac_vi_cwmin = 3
+wmm_ac_vi_cwmax = 4
+wmm_ac_vi_txop_limit = 94
+wmm_ac_vi_acm = 0
+＃注意：对于IEEE 802.11b模式：cWmin = 4 cWmax = 5 txop_limit = 188
+＃
+＃最高优先级/ AC_VO =语音
+wmm_ac_vo_aifs = 2
+wmm_ac_vo_cwmin = 2
+wmm_ac_vo_cwmax = 3
+wmm_ac_vo_txop_limit = 47
+wmm_ac_vo_acm = 0
+＃注意：对于IEEE 802.11b模式：cWmin = 3 cWmax = 4 Burst = 102
+
+＃启用Multi-AP功能
+＃0 =禁用（默认）
+＃1 = AP支持回程BSS
+＃2 = AP支持前传BSS
+＃3 = AP同时支持回传BSS和前传BSS
+＃multi_ap = 0
+
+＃静态WEP密钥配置
+＃
+＃传输时使用的密钥号。
+＃必须在0到3之间，并且必须设置相应的密钥。
+＃默认：未设置
+＃wep_default_key = 0
+＃要使用的WEP密钥。
+＃密钥可以是带引号的字符串或不带引号的十六进制数字。
+＃密钥长度应为5、13或16个字符，或10、26或32个字符
+＃位数字，取决于是40位（64位），104位（128位）还是40位（64位）
+＃使用128位（152位）WEP。
+＃仅必须提供默认密钥；其他是可选的。
+＃默认：未设置
+＃wep_key0 = 123456789a
+＃wep_key1 =“ vwxyz”
+＃wep_key2 = 0102030405060708090a0b0c0d
+＃wep_key3 =“。2.4.6.8.0.23”
+
+＃车站不活动限制
+＃
+＃如果工作站在ap_max_inactivity秒内未发送任何内容，则
+＃向其发送空数据帧以验证是否为空
+＃仍在范围内。如果未确认此帧，则该站将处于
+＃取消关联，然后取消认证。此功能用于
+＃当STA移出站点时清除旧条目的站点表
+＃ 范围。
+＃
+＃如果站点仍在范围内，则该站点可以再次与AP关联；
+＃此非活动轮询仅用作更好的验证方式
+＃不活动；即，客户端将不会报告断开的连接，因为
+＃没有第一次轮询就不会立即发送取消关联帧
+＃带有数据帧的STA。
+＃默认值：300（即5分钟）
+＃ap_max_inactivity = 300
+＃
+＃可以禁用不活动轮询以根据以下情况断开站点连接
+＃不活动超时，以便空闲站更有可能断开连接
+＃即使它们仍在AP范围内。可以通过设置
+＃将skip_inactivity_poll设置为1（默认为0）。
+＃skip_inactivity_poll = 0
+
+＃根据过多的传输故障或其他原因取消关联站点
+＃表示连接丢失。这取决于驱动程序的功能和
+＃可能不适用于所有驱动程序。
+＃disassoc_low_ack = 1
+
+＃允许的最大侦听间隔（允许STA多少个信标周期
+＃保持睡眠）。默认值：65535（字段大小无限制）
+＃max_listen_interval = 100
+
+＃WDS（4地址帧）模式，具有每站虚拟接口
+＃（仅受driver = nl80211支持）
+＃此模式允许关联的站使用4地址帧来允许第2层
+＃使用桥接。
+＃wds_sta = 1
+
+＃如果设置了bridge参数，则将WDS STA接口添加到同一接口
+＃默认为桥接。可以使用wds_bridge参数将其覆盖为
+＃使用单独的桥。
+＃wds_bridge = wds-br0
+
+＃启动AP时默认禁用信标功能。
+＃start_disabled = 0
+
+＃客户端隔离可用于防止之间的低级桥接
+BSS中的＃个关联站。默认情况下，此桥接是允许的。
+＃ap_isolate = 1
+
+＃BSS负载更新时间（以BU为单位）
+＃此字段用于启用和配置将BSS Load元素添加到
+＃信标和探测响应帧。
+＃bss_load_update_period = 50
+
+＃信道利用率平均周期（以BU为单位）
+＃此字段用于启用和配置平均信道利用率
+＃使用bss_load_update_period计算。这应该是的倍数
+＃bss_load_update_period以获得更准确的计算。
+＃chan_util_avg_period = 600
+
+＃固定BSS负载值用于测试
+＃此字段可用于配置hostapd以添加固定的BSS Load元素
+＃进入信标和探测响应帧以进行测试。格式为
+＃<工作站数>：<通道利用率>：<可用的允许容量>
+＃bss_load_test = 12：80：20000
+
+＃组播到单播转换
+＃要求AP对ARP，IPv4和IPv4进行组播到单播转换。
+＃IPv6帧（可能在802.1Q中）。如果启用，将发送此类帧
+＃分别分配给每个站，用自己的MAC地址替换DA
+＃，而不是组地址。
+＃
+＃请注意，这可能会破坏接收者的某些期望，例如
+＃丢弃在多播L2帧内接收到的单播IP数据包的能力，或者
+＃能够不为收到的数据包发送ICMP目标不可达消息
+＃在L2多播中（这是必需的，但接收者无法分辨出区别
+＃（如果启用了此新选项）。
+＃
+＃这也没有实现802.11 DMS（定向多播服务）。
+＃
+＃multicast_to_unicast = 0
+
+＃在AP启动/停止发送广播取消认证帧
+＃默认值：1（启用）
+＃broadcast_deauth = 1
+
+##### IEEE 802.11n相关配置######################################
+
+＃ieee80211n：是否启用IEEE 802.11n（HT）
+＃0 =禁用（默认）
+＃1 =启用
+＃注意：您还需要启用WMM才能具有完整的HT功能。
+＃注意：hw_mode = g（2.4 GHz）和hw_mode = a（5 GHz）用于指定频段。
+＃ieee80211n = 1
+
+＃ht_capab：HT功能（标志列表）
+＃LDPC编码能力：[LDPC] =支持
+＃支持的信道宽度设置：[HT40-] = 20 MHz和40 MHz，带辅助
+主频道下方的＃个频道；[HT40 +] = 20 MHz和40 MHz
+＃主频道上方的辅助频道
+＃（只有未设置时为20 MHz）
+＃注意：HT40-和
+＃HT40 +。下表显示了可能用于
+＃HT40-和HT40 +使用符合IEEE 802.11n附录J：
+＃频率HT40- HT40 +
+＃2.4 GHz 5-13 1-7（欧洲/日本为1-9）
+＃5 GHz 40、48、56、64 36、44、52、60
+＃（取决于位置，并非所有这些频道都可用
+＃ 用来）
+＃请注意，40 MHz频道可能会切换其主要和次要频道
+＃个通道（如果需要）或基于40个通道的创建可能会被拒绝
+＃在重叠的BSS上。这些更改在hostapd时自动完成
+＃正在建立40 MHz频道。
+＃空间复用（SM）节能：[SMPS-STATIC]或[SMPS-DYNAMIC]
+＃（如果未设置，则禁用SMPS）
+＃HT绿地：[GF]（如果未设置，则禁用）
+＃20 MHz的短GI：[SHORT-GI-20]（如果未设置则禁用）
+＃40 MHz的短GI：[SHORT-GI-40]（如果未设置则禁用）
+＃Tx STBC：[TX-STBC]（如果未设置，则禁用）
+＃Rx STBC：[RX-STBC1]（一个空间流），[RX-STBC12]（一个或两个空间流
+＃个流）或[RX-STBC123]（一个，两个或三个空间流）；Rx STBC
+＃如果这些都不设置则禁用
+＃HT延迟的块确认：[DELAYED-BA]（如果未设置，则禁用）
+＃最大A-MSDU长度：[MAX-AMSDU-7935]为7935个八位位组（如果不是，则为3839个八位位组）
+＃套）
+＃40 MHz中的DSSS / CCK模式：[DSSS_CCK-40] =允许（如果未设置，则不允许）
+＃40 MHz不兼容[40-INTOLERANT]（如果未设置，则不发布）
+＃L-SIG TXOP保护支持：[LSIG-TXOP-PROT]（如果未设置，则禁用）
+＃ht_capab = [HT40-] [SHORT-GI-20] [SHORT-GI-40]
+
+＃要求工作站支持HT PHY（如果不支持，则拒绝关联）
+＃require_ht = 1
+
+＃如果设置为非零，则要求工作站执行重叠扫描
+＃个信道测试可能受到40 MHz流量影响的电台。
+＃此参数设置两次扫描之间的间隔（以秒为单位）。设定这个
+＃设置为非零值允许2.4 GHz频段AP动态移动到40 MHz信道
+＃未发现与相邻设备的共存问题。
+＃obss_interval = 0
+
+##### IEEE 802.11ac相关配置#####################################
+
+＃ieee80211ac：是否启用IEEE 802.11ac（VHT）
+＃0 =禁用（默认）
+＃1 =启用
+＃注意：您还需要启用WMM才能使用完整的VHT功能。
+＃注意：hw_mode = a用于指定VHT使用5 GHz频带。
+＃ieee80211ac = 1
+
+＃vht_capab：VHT功能（标志列表）
+＃
+＃vht_max_mpdu_len：[MAX-MPDU-7991] [MAX-MPDU-11454]
+＃表示最大MPDU长度
+＃0 = 3895个八位位组（默认）
+＃1 = 7991个八位位组
+＃2 = 11454个八位位组
+＃3 =保留
+＃
+#supported_chan_width：[VHT160] [VHT160-80PLUS80]
+＃表示支持的通道宽度
+＃0 =不支持160 MHz和80 + 80的通道宽度（默认）
+＃1 =支持160 MHz通道宽度
+＃2 =支持160 MHz和80 + 80通道宽度
+＃3 =保留
+＃
+＃Rx LDPC编码能力：[RXLDPC]
+＃表示支持接收LDPC编码的pkts
+＃0 =不支持（默认）
+＃1 =支持
+＃
+＃80 MHz的短GI：[SHORT-GI-80]
+＃表示短GI支持接收通过TXVECTOR传输的数据包
+＃参数格式等于VHT并且CBW = 80Mhz
+＃0 =不支持（默认）
+＃1 =支持
+＃
+＃160 MHz的短GI：[SHORT-GI-160]
+＃表示短GI支持接收通过TXVECTOR传输的数据包
+＃参数格式等于VHT并且CBW = 160Mhz
+＃0 =不支持（默认）
+＃1 =支持
+＃
+＃Tx STBC：[TX-STBC-2BY1]
+＃表示支持至少2x1 STBC的传输
+＃0 =不支持（默认）
+＃1 =支持
+＃
+＃Rx STBC：[RX-STBC-1] [RX-STBC-12] [RX-STBC-123] [RX-STBC-1234]
+＃表示支持使用STBC接收PPDU
+＃0 =不支持（默认）
+＃1 =支持一个空间流
+＃2 =支持一两个空间流
+＃3 =支持一，二和三个空间流
+＃4 =支持一，二，三和四个空间流
+＃5,6,7 =保留
+＃
+＃SU Beamformer功能：[SU-BEAMFORMER]
+＃表示支持作为单个用户波束形成器进行操作
+＃0 =不支持（默认）
+＃1 =支持
+＃
+＃SU Beamformee功能：[SU-BEAMFORMEE]
+＃表示支持以单用户Beamformee的身份进行操作
+＃0 =不支持（默认）
+＃1 =支持
+＃
+＃支持的波束成形器天线的压缩转向数：
+＃[BF-ANTENNA-2] [BF-ANTENNA-3] [BF-ANTENNA-4]
+＃Beamformee的功能指示最大波束形成器数量
+发送压缩波束成形时，波束成形器可以支持的＃个天线
+＃ 反馈
+＃如果支持SU波束形成器，则设置为最大值减去1
+＃else保留（默认）
+＃
+＃测深尺寸数：
+＃[SOUNDING-DIMENSION-2] [SOUNDING-DIMENSION-3] [SOUNDING-DIMENSION-4]
+＃Beamformer的功能指示NUM_STS参数的最大值
+VHT NDP的TXVECTOR中的＃
+＃如果支持SU波束形成器，则设置为最大值减去1
+＃else保留（默认）
+＃
+＃MU Beamformer功能：[MU-BEAMFORMER]
+＃表示支持作为MU波束形成器运行
+＃0 =不支持或由非AP STA发送（默认）
+＃1 =支持
+＃
+＃VHT TXOP PS：[VHT-TXOP-PS]
+＃表示AP是否支持VHT TXOP省电模式
+＃或STA是否处于VHT TXOP省电模式
+＃0 = VHT AP不支持VHT TXOP PS模式（OR）VHT STA不处于VHT TXOP PS中
+＃模式
+＃1 = VHT AP支持VHT TXOP PS模式（OR）VHT STA处于VHT TXOP节能状态
+＃模式
+＃
+＃+具有HTC-VHT功能：[HTC-VHT]
+＃表示STA是否支持接收VHT变量HT Control
+＃栏位。
+＃0 =不支持（默认）
+＃1 =支持
+＃
+＃最大A-MPDU长度指数：[MAX-A-MPDU-LEN-EXP0] .. [MAX-A-MPDU-LEN-EXP7]
+＃表示STA可以接收的A-MPDU预EOF填充的最大长度
+＃整数形式，取值范围是0?7。
+＃此字段定义的长度等于
+＃2 pow（13 +最大A-MPDU长度指数）-1个八位位组
+＃
+＃VHT链接自适应功能：[VHT-LINK-ADAPT2] [VHT-LINK-ADAPT3]
+＃表示STA是否支持VHT变体的链路自适应
+＃HT控制字段
+＃如果+ HTC-VHTcapable为1
+＃0 =（无反馈），如果STA不提供VHT MFB（默认）
+＃1 =保留
+＃2 =（未经请求）如果STA仅提供未经请求的VHT MFB
+＃3 =（两者）是否STA可以响应VHT MRQ提供VHT MFB，以及
+＃STA提供未经请求的VHT MFB
+＃如果+ HTC-VHTcapable为0则保留
+＃
+＃Rx天线方向图一致性：[RX-ANTENNA-PATTERN]
+＃表示可能会改变Rx天线方向图
+＃0 =在关联的有效期内，Rx天线方向图可能会改变
+＃1 =关联期间，Rx天线方向图不变
+＃
+＃Tx天线方向图一致性：[TX-ANTENNA-PATTERN]
+＃表示可能改变Tx天线方向图
+＃0 =在关联的有效期内，Tx天线方向图可能会改变
+＃1 =关联期间，Tx天线方向图不变
+＃vht_capab = [SHORT-GI-80] [HTC-VHT]
+＃
+＃要求工作站支持VHT PHY（如果不支持，则拒绝关联）
+＃require_vht = 1
+
+＃0 = 20或40 MHz工作通道宽度
+＃1 = 80 MHz通道宽度
+＃2 = 160 MHz通道宽度
+＃3 = 80 + 80 MHz通道宽度
+＃vht_oper_chwidth = 1
+＃
+＃中心频率= 5 GHz +（5 *索引）
+＃因此索引42给出了中心频率5.210 GHz
+＃是5G频段中的第42频道
+＃
+＃vht_oper_centr_freq_seg0_idx = 42
+＃
+＃中心频率= 5 GHz +（5 *索引）
+＃因此索引159给出了中心频率5.795 GHz
+＃是5G频段中的159通道
+＃
+＃vht_oper_centr_freq_seg1_idx = 159
+
+＃在（Re）Association Response帧中使用工作站的nsts功能的解决方法
+＃某些部署的设备可能需要此功能，以实现互操作性
+＃如果AP的能力大于
+＃站的能力。默认情况下禁用此功能，可以通过以下方式启用
+＃设置use_sta_nsts = 1。
+＃use_sta_nsts = 0
+
+##### IEEE 802.11ax相关配置#####################################
+
+＃ieee80211ax：是否启用了IEEE 802.11ax（HE）
+＃0 =禁用（默认）
+＃1 =启用
+＃ieee80211ax = 1
+
+#he_su_beamformer：HE单用户波束形成器支持
+＃0 =不支持（默认）
+＃1 =支持
+＃he_su_beamformer = 1
+
+#he_su_beamformee：HE单用户beamformee支持
+＃0 =不支持（默认）
+＃1 =支持
+＃he_su_beamformee = 1
+
+#he_mu_beamformer：HE多用户波束形成器支持
+＃0 =不支持（默认）
+＃1 =支持
+＃he_mu_beamformer = 1
+
+＃he_bss_color：BSS颜色（1-63）
+＃he_bss_color = 1
+
+#he_default_pe_duration：我们中HE PPDU中PE字段的持续时间
+＃可能的值为0 us（默认），4 us，8 us，12 us和16 us
+＃he_default_pe_duration = 0
+
+#he_twt_required：是否需要TWT
+＃0 =不需要（默认）
+＃1 =必填
+＃he_twt_required = 0
+
+#he_rts_threshold：STA传输的持续时间
+＃0 =未设置（默认）
+＃无符号整数=持续时间，以16 us为单位
+＃he_rts_threshold = 0
+
+＃HE操作频道信息；有关详细信息，请参见匹配的vht_ *参数。
+＃在6 GHz频带上，中心频率计算从5.940 GHz偏移开始。
+＃例如idx = 3将导致5955 MHz中心频率。此外，
+＃he_oper_chwidth被忽略，并且通道宽度从
+＃配置的操作等级或中心频率索引（请参阅
+＃IEEE P802.11ax / D4.3附录E，表E-4）。
+#he_oper_chwidth
+＃he_oper_centr_freq_seg0_idx
+＃he_oper_centr_freq_seg1_idx
+
+#he_basic_mcs_nss_set：基本NSS / MCS设置
+Max HE-MCS的2位值的16位组合，用于1..8 SS；每个2位
+＃值具有以下含义：
+＃0 = HE-MCS 0-7，1 = HE-MCS 0-9，2 = HE-MCS 0-11，3 =不支持
+#he_basic_mcs_nss_set
+
+#he_mu_edca_qos_info_param_count
+#he_mu_edca_qos_info_q_ack
+＃he_mu_edca_qos_info_queue_request = 1
+#he_mu_edca_qos_info_txop_request
+＃he_mu_edca_ac_be_aifsn = 0
+＃he_mu_edca_ac_be_ecwmin = 15
+＃he_mu_edca_ac_be_ecwmax = 15
+＃he_mu_edca_ac_be_timer = 255
+＃he_mu_edca_ac_bk_aifsn = 0
+＃he_mu_edca_ac_bk_aci = 1
+＃he_mu_edca_ac_bk_ecwmin = 15
+＃he_mu_edca_ac_bk_ecwmax = 15
+＃he_mu_edca_ac_bk_timer = 255
+＃he_mu_edca_ac_vi_ecwmin = 15
+＃he_mu_edca_ac_vi_ecwmax = 15
+＃he_mu_edca_ac_vi_aifsn = 0
+＃he_mu_edca_ac_vi_aci = 2
+＃he_mu_edca_ac_vi_timer = 255
+＃he_mu_edca_ac_vo_aifsn = 0
+＃he_mu_edca_ac_vo_aci = 3
+＃he_mu_edca_ac_vo_ecwmin = 15
+＃he_mu_edca_ac_vo_ecwmax = 15
+＃he_mu_edca_ac_vo_timer = 255
+
+＃空间重用参数集
+#he_spr_sr_control
+#he_spr_non_srg_obss_pd_max_offset
+#he_spr_srg_obss_pd_min_offset
+#he_spr_srg_obss_pd_max_offset
+
+##### IEEE 802.1X-2004相关配置##################################
+
+＃需要IEEE 802.1X授权
+＃ieee8021x = 1
+
+＃IEEE 802.1X / EAPOL版本
+＃hostapd是基于定义EAPOL的IEEE Std 802.1X-2004实现的
+＃版本2。但是，有许多客户端实现无法处理
+＃正确输入新版本号（它们似乎完全掉落了框架）。
+＃为了使hostapd与这些客户端互操作，请使用版本号
+可以使用此配置值将＃设置为旧版本（1）。
+＃注意：使用MACsec时，eapol_version必须设置为3，即
+＃在IEEE Std 802.1X-2010中定义。
+＃eapol_version = 2
+
+＃与EAP Request-Identity一起发送的可选可显示消息。首\ 0
+该字符串中的＃将被转换为ASCII-0（空）。这可以用来
+＃单独的网络信息（属性=值对的逗号分隔列表）；看到，
+＃例如RFC 4284。
+＃eap_message =你好
+＃eap_message = hello \ 0networkid = netw，nasid = foo，portid = 0，NAIRealms = example.com
+
+＃WEP密钥更新（如果未设置密钥长度或将其设置为0，则禁用）
+＃默认/广播和单个/单播密钥的密钥长度：
+＃5 = 40位WEP（也称为具有40个秘密位的64位WEP）
+＃13 = 104位WEP（也称为具有104个秘密位的128位WEP）
+＃wep_key_len_broadcast = 5
+＃wep_key_len_unicast = 5
+＃密钥更新周期（以秒为单位）。0 =不重新输入密钥（即，仅设置一次密钥）
+＃wep_rekey_period = 300
+
+＃WinXP请求者的EAPOL键索引变通方法（设置为bit7）（仅当
+＃仅使用广播密钥）
+eapol_key_index_workaround = 0
+
+＃EAP重新认证周期，以秒为单位（默认值：3600秒； 0 =禁用
+＃重新认证）。
+＃eap_reauth_period = 3600
+
+＃使用PAE组地址（01：80：c2：00：00：03）而不是单个目标
+＃发送具有driver = wired的EAPOL帧时的地址。这是最常见的
+＃有线身份验证中使用的机制，但它也需要端口
+＃仅由一个站使用。
+＃use_pae_group_addr = 1
+
+＃EAP重新认证协议（ERP）认证器（RFC 6696）
+＃
+＃是否先使用EAP-Initiate / Re-auth-Start来启动EAP身份验证
+＃EAP身份/请求
+＃erp_send_reauth_start = 1
+＃
+＃EAP-Initiate / Re-auth-Start的域名。如果没有，则从消息中省略
+＃set（无本地ER服务器）。如果以下情况，集成EAP服务器也会使用此功能：
+＃启用了ERP（eap_server_erp = 1）。
+＃erp_domain = example.com
+
+##### MACsec ########################################### ######################
+
+＃macs??ec_policy：IEEE 802.1X / MACsec选项
+＃这确定如何使用MACsec保护会话（仅适用于MACsec）
+＃个驱动程序）。
+＃0：不使用MACsec（默认）
+＃1：启用MACsec-应该安全，接受密钥服务器的建议
+＃确定是否使用安全会话。
+＃
+＃macs??ec_integ_only：IEEE 802.1X / MACsec传输模式
+＃此设置仅在使用MACsec时适用，即
+＃-启用了macsec_policy
+＃-密钥服务器已决定启用MACsec
+＃0：加密流量（默认）
+＃1：仅诚信
+＃
+＃macs??ec_replay_protect：IEEE 802.1X / MACsec重播保护
+＃此设置仅在使用MACsec时适用，即
+＃-启用了macsec_policy
+＃-密钥服务器已决定启用MACsec
+＃0：禁用重播保护（默认）
+＃1：重播保护已启用
+＃
+＃macs??ec_replay_window：IEEE 802.1X / MACsec重放保护窗口
+＃这将确定允许重放的窗口，以允许接收
+网络错序的帧数。
+＃仅当MACsec重播保护处于活动状态时，此设置才适用，即
+＃-启用了macsec_replay_protect
+＃-密钥服务器已决定启用MACsec
+＃0：无重播窗口，严格检查（默认）
+＃1..2 ^ 32-1：可能被错误排序的数据包数量
+＃
+＃macs??ec_port：IEEE 802.1X / MACsec端口
+＃SCI的端口组件
+＃范围：1-65534（默认值：1）
+＃
+＃mka_priority（MKA演员的优先级）
+＃范围：0..255（默认：255）
+＃
+＃mka_cak，mka_ckn和mka_priority：IEEE 802.1X / MACsec预共享密钥模式
+＃这允许使用（CAK，CKN）对使用预共享密钥配置MACsec。
+＃在此模式下，hostapd实例可以充当MACsec对等体。同行
+优先级较低的＃将成为关键服务器并开始分发SAK。
+＃mka_cak（CAK =安全连接关联密钥）占用16字节（128位）
+＃十六进制字符串（32个十六进制数字）或32字节（256位）的十六进制字符串（64个十六进制数字）
+＃mka_ckn（CKN = CAK名称）采用1..32字节（8..256位）的十六进制字符串
+＃（2..64个十六进制数字）
+
+#####集成EAP服务器########################################## #########
+
+＃（可选）可以将hostapd配置为使用集成的EAP服务器
+＃在本地处理EAP身份验证，而无需外部RADIUS
+＃服务器。此功能可以同时用作本地身份验证服务器
+＃适用于IEEE 802.1X / EAPOL，并用作其他设备的RADIUS服务器。
+
+＃使用集成的EAP服务器而不是外部RADIUS身份验证
+＃服务器。如果将hostapd配置为充当RADIUS，也需要这样做
+＃身份验证服务器。
+eap_server = 0
+
+＃EAP服务器用户数据库的路径
+＃如果包含SQLite支持，则可以将其设置为“ sqlite：/path/to/sqlite.db”
+＃使用SQLite数据库而不是文本文件。
+＃eap_user_file = / etc / hostapd.eap_user
+
+＃EAP-TLS / PEAP / TTLS的CA证书（PEM或DER文件）
+＃ca_cert = / etc / hostapd.ca.pem
+
+＃EAP-TLS / PEAP / TTLS的服务器证书（PEM或DER文件）
+＃server_cert = / etc / hostapd.server.pem
+
+＃私钥与服务器证书匹配的EAP-TLS / PEAP / TTLS
+＃如果证书和密钥都指向与server_cert相同的文件
+＃包含在一个文件中。PKCS＃12（PFX）文件（.p12 / .pfx）也可以是
+＃通过注释掉server_cert并将PFX文件指定为
+＃private_key。
+＃private_key = / etc / hostapd.server.prv
+
+＃私钥密码
+＃private_key_passwd =秘密密码
+
+＃备用服务器证书和私钥可以与
+＃以下参数（其值与上述参数相同，但没有
+＃'2'后缀）。ca_cert文件（采用PEM编码）用于添加信任根
+＃用于服务器证书和/或客户端证书）。
+＃
+＃此备用服务器证书配置的主要用例是
+＃启用RSA和ECC公钥。服务器将选择使用哪一个
+＃基于密码套件的客户端首选项（在TLS ClientHello中
+＃ 信息）。应该注意的是，已部署的EAP对等方实现的数量
+＃不要根据密码套件列表的本地配置和
+＃因此，服务器上替代证书类型的配置可能
+＃导致互操作性问题。
+＃server_cert2 = / etc / hostapd.server-ecc.pem
+＃private_key2 = / etc / hostapd.server-ecc.prv
+＃private_key_passwd2 =秘密密码
+
+
+＃服务器身份
+＃提供身份验证服务器身份传递机制的EAP方法
+＃使用此值。如果未设置，则默认使用“ hostapd”。
+＃server_id = server.example.com
+
+＃启用CRL验证。
+＃注意：hostapd尚不支持基于CDP的CRL下载。因此，
+由ca签名的＃有效CRL必须包含在ca_cert文件中。
+＃这可以通过将PEM格式用于CA证书和CRL以及
+＃将它们串联到一个文件中。每当CRL更改时，hostapd就需要
+＃重新启动以使用新的CRL。另外，crl_reload_interval可以
+＃用于配置加载的CRL信息的定期更新。
+＃0 =不验证CRL（默认）
+＃1 =检查用户证书的CRL
+＃2 =检查证书路径中的所有CRL
+＃check_crl = 1
+
+＃指定是否忽略与证书CRL有效时间不匹配的证书
+＃错误X509_V_ERR_CRL_HAS_EXPIRED和X509_V_ERR_CRL_NOT_YET_VALID。
+＃
+＃0 =忽略错误
+＃1 =不忽略错误（默认）
+＃check_crl_strict = 1
+
+＃CRL重新加载间隔（以秒为单位）
+＃可用于在每个新TLS上重新加载ca_cert文件和随附的CRL
+＃会话（如果上一次重新加载与当前重新加载时间之间存在差异）
+＃秒大于crl_reload_interval。
+＃注意：如果间隔时间很短，则可能会对CPU开销产生负面影响
+＃，建议不要低于300秒。
+＃仅适用于check_crl值1和2。
+＃0 =不重新加载CRL（默认）
+＃crl_reload_interval = 300
+
+＃如果设置了check_cert_subject，将检查每个字段的值
+＃根据客户证书中主题的DN。如果值确实
+＃不匹配，证书验证将失败，从而拒绝用户。
+＃此选项允许hostapd以正确的顺序匹配每个单独的字段
+＃根据客户证书中主题的DN。
+＃
+＃例如，check_cert_subject = C = US / O = XX / OU = ABC / OU = XYZ / CN = 1234将检查
+＃客户证书中主题的每个DN字段。如果OU = XYZ
+＃在客户证书（DN字段为
+＃客户证书C = US / O = XX / OU = XYZ / OU = ABC / CN = 1234），hostapd将拒绝
+＃客户，因为'OU'的顺序与中的指定字符串不匹配
+＃check_cert_subject。
+＃
+＃此选项还允许将“ *”用作通配符。此选项有一些限制。
+＃仅可按照以下示例使用。
+＃
+＃例如，check_cert_subject = C = US / O = XX / OU =生产*，我们有两个
+＃个客户端和第一个客户端证书中主题的DN为
+＃（C = US / O = XX / OU =生产单位），第二个客户中对象的DN为
+＃（C = US / O = XX / OU =生产工厂）。在这种情况下，hostapd将允许
+＃个客户端，因为两个客户端证书中的“ OU”字段的值均匹配
+＃在'check_cert_subject'中将'OU'的值设置为'wildcard'。
+＃
+＃*（允许所有客户端，例如check_cert_subject = *）
+＃check_cert_subject =字符串
+
+＃TLS会话生存时间（以秒为单位）
+＃这可用于允许TLS会话缓存和恢复
+＃使用EAP-TLS / TTLS / PEAP时的握手缩写。
+＃（默认值：0 =禁用会话缓存和恢复）
+＃tls_session_lifetime = 3600
+
+＃TLS标志
+＃[ALLOW-SIGN-RSA-MD5] =允许基于MD5的证书签名（取决于
+＃TLS库，默认情况下可以将其禁用以加强安全性
+＃安全）
+＃[DISABLE-TIME-CHECKS] =忽略证书有效时间（此请求
+＃TLS库接受证书，即使它们当前不是
+＃有效，即已过期或尚未生效；这应该是
+＃仅用于测试目的）
+＃[DISABLE-TLSv1.0] =禁用TLSv1.0
+＃[ENABLE-TLSv1.0] =明确启用TLSv1.0（这允许
+＃覆盖系统范围的TLS策略）
+＃[DISABLE-TLSv1.1] =禁用TLSv1.1
+＃[ENABLE-TLSv1.1] =明确启用TLSv1.1（这允许
+＃覆盖系统范围的TLS策略）
+＃[DISABLE-TLSv1.2] =禁用TLSv1.2
+＃[ENABLE-TLSv1.2] =明确启用TLSv1.2（这允许
+＃覆盖系统范围的TLS策略）
+＃[DISABLE-TLSv1.3] =禁用TLSv1.3
+＃[ENABLE-TLSv1.3] =启用TLSv1.3（实验性-默认情况下处于禁用状态）
+＃tls_flags = [标志1] [标志2] ...
+
+＃包含数据的EAP消息回合的最大数量（默认值：100）
+＃max_auth_rounds = 100
+
+＃短EAP消息回合的最大数量（默认值：50）
+＃max_auth_rounds_short = 50
+
+＃缓存的OCSP装订响应（DER编码）
+＃如果设置，则此文件由EAP服务器作为证书状态响应发送
+＃如果EAP对等方在ClientHello消息中请求证书状态。
+＃可以更新此缓存文件，例如，通过运行以下命令
+＃定期从OCSP响应器获取更新：
+＃openssl ocsp \
+＃-no_nonce \
+＃-CAfile /etc/hostapd.ca.pem \
+＃-issuer /etc/hostapd.ca.pem \
+＃-cert /etc/hostapd.server.pem \
+＃-url http://ocsp.example.com:8888/ \
+＃-respout /tmp/ocsp-cache.der
+＃ocsp_stapling_response = / tmp / ocsp-cache.der
+
+＃缓存的OCSP装订响应列表（DER编码的OCSPResponseList）
+＃与ocsp_stapling_response类似，但扩展版本在中定义
+＃RFC 6961，允许提供多个OCSP响应。
+＃ocsp_stapling_response_multi = / tmp / ocsp-multi-cache.der
+
+＃dh_file：DH / DSA参数文件的文件路径（PEM格式）
+＃这是一个可选的配置文件，用于设置
+＃临时DH密钥交换。在大多数情况下，默认的RSA身份验证会
+＃不使用此配置。但是，可以设置RSA来使用
+＃临时DH密钥交换。此外，带有DSA密钥的密码始终使用
+＃临时DH键。这可以用于实现前向保密。如果文件
+＃为DSA参数格式，它将自动转换为DH
+＃参数。如果使用匿名EAP-FAST，则此参数是必需的。
+＃您可以使用OpenSSL生成DH参数文件，例如，
+＃“ openssl dhparam -out /etc/hostapd.dh.pem 2048”
+＃dh_file = / etc / hostapd.dh.pem
+
+＃OpenSSL密码字符串
+＃
+＃这是特定于OpenSSL的配置选项，用于配置默认
+＃个密码。如果未设置，则在构建时配置的值（“ DEFAULT：！EXP：！LOW”
+默认使用＃）。
+＃有关OpenSSL文档，请参阅https://www.openssl.org/docs/apps/ciphers.html
+＃关于密码套件配置。仅当hostapd构建为
+＃使用OpenSSL。
+＃openssl_ciphers =默认：！EXP :!低
+
+＃OpenSSL ECDH曲线
+＃
+＃这是OpenSSL特定的配置选项，用于配置ECDH
+＃EAP-TLS / TTLS / PEAP / FAST服务器的曲线。如果未设置，则自动曲线
+＃选择已启用。如果设置为空字符串，则ECDH曲线配置为
+＃未完成（确切的库行为取决于库版本）。
+＃否则，这是用冒号分隔的受支持曲线的列表（例如，
+＃P-521：P-384：P-256）。仅当hostapd可以使用时才适用
+＃OpenSSL。这不能用于Suite B情况，因为相同的OpenSSL
+在这些情况下，＃参数的设置不同，这可能与
+＃设计。
+＃openssl_ecdh_curves = P-521：P-384：P-256
+
+＃神父agment大小EAP方法
+＃fragment_size = 1400
+
+＃EAP-pwd的有限循环组。数字映射到一组域参数
+＃使用用于IKE（RFC 2409）的IANA存储库。
+＃pwd_group = 19
+
+＃EAP-SIM数据库/认证网关接口的配置数据。
+＃这是实现特定格式的文本字符串。这个例子
+＃eap_sim_db.c中的实现将其用作UNIX域套接字名称
+＃HLR / AuC网关（例如hlr_auc_gw）。在这种情况下，路径使用“ unix：”
+＃ 字首。如果hostapd是使用SQLite支持构建的（.config中的CONFIG_SQLITE = y），
+＃数据库文件可以用可选的db = <path>参数描述。
+＃eap_sim_db = unix：/tmp/hlr_auc_gw.sock
+＃eap_sim_db = unix：/tmp/hlr_auc_gw.sock db = / tmp / hostapd.db
+
+＃EAP-SIM DB请求超时
+＃此参数设置等待数据库请求响应的最长时间。
+＃参数值，以秒为单位。
+＃eap_sim_db_timeout = 1
+
+＃EAP-FAST PAC-不透明值的加密密钥。此密钥必须是秘密，
+＃随机值。它以十六进制格式配置为16个字节的值。有可能
+＃使用以下命令生成的：
+＃od -tx1 -v -N16 / dev / random | 1 8 | tr -d'
+＃pac_opaque_encr_key = 000102030405060708090090a0b0c0d0e0f
+
+＃EAP-FAST授权身份（A-ID）
+＃A-ID指示发布PAC的授权机构的身份。A-ID
+＃在所有发行服务器上应该是唯一的。从理论上讲，这是一个变量
+＃length字段，但是由于某些现有的实现要求将A-ID
+＃16个八位位组的长度，强烈建议将该长度用于
+＃字段可提供与已部署对等实现的互操作性。这个
+＃字段以十六进制格式配置。
+＃eap_fast_a_id = 101112131415161718191a1b1c1d1e1f
+
+＃EAP-FAST权限标识符信息（A-ID-Info）
+＃这是A-ID的用户友好名称。例如，企业名称
+＃和服务器名称（易于理解的格式）。该字段编码为UTF-8。
+＃eap_fast_a_id_info =测试服务器
+
+＃启用/禁用不同的EAP-FAST设置模式：
+＃0 =禁止供应
+＃1 =仅允许匿名配置
+＃2 =仅允许通过身份验证的配置
+＃3 =允许两种配置模式（默认）
+＃eap_fast_prov = 3
+
+＃EAP-FAST PAC密钥生存时间（以秒为单位）（硬限制）
+＃pac_key_lifetime = 604800
+
+＃EAP-FAST PAC-Key刷新时间（以秒为单位）（软限制为硬限制）
+＃个限制）。该秒数后，服务器将生成一个新的PAC-Key
+剩余的生命周期数（或更少）。
+＃pac_key_refresh_time = 86400
+
+＃EAP-TEAP身份验证类型
+＃0 =内部EAP（默认）
+＃1 =基本密码验证
+＃eap_teap_auth = 0
+
+＃使用PAC时的EAP-TEAP身份验证行为
+＃0 =执行内部身份验证（默认）
+＃1 =跳过内部身份验证（内部EAP /基本密码身份验证）
+＃eap_teap_pac_no_inner = 0
+
+＃带有结果TLV的EAP-TEAP行为
+＃0 =包含在中间结果TLV中（默认）
+＃1 =发送单独的消息（出于测试目的）
+＃eap_teap_separate_result = 0
+
+＃EAP-TEAP身份
+＃0 =允许任何身份类型（默认）
+＃1 =要求用户身份
+＃2 =需要机器身份
+＃3 =请求用户身份；接受用户或机器身份
+＃4 =请求机器身份；接受用户或机器身份
+＃5 =同时要求用户和机器身份
+＃eap_teap_id = 0
+
+＃使用AT_RESULT_IND的EAP-SIM和EAP-AKA保护成功/失败指示
+＃（默认值：0 =禁用）。
+＃eap_sim_aka_result_ind = 1
+
+＃EAP-SIM和EAP-AKA身份选项
+＃0 =不使用假名或快速重新认证
+＃1 =使用假名，但不快速重新认证
+＃2 =不使用假名，而是使用快速重新认证
+＃3 =使用假名并使用快速重新认证（默认）
+＃eap_sim_id = 3
+
+＃可信网络连接（TNC）
+＃如果启用，则需要先进行TNC验证，然后才能允许对等方
+＃连接。注意：这仅与EAP-TTLS和EAP-FAST一起使用。如果有其他
+＃启用EAP方法，将允许对等方在没有TNC的情况下进行连接。
+＃tnc = 1
+
+＃EAP重新认证协议（ERP）-RFC 6696
+＃
+＃是否在EAP服务器上启用ERP。
+＃eap_server_erp = 1
+
+
+##### RADIUS客户端配置########################################## ###
+＃用于带有外部身份验证服务器，IEEE 802.11的IEEE 802.1X
+＃使用外部ACL对MAC地址和计费进行身份验证
+
+＃接入点自己的IP地址（用作NAS-IP-Address）
+own_ip_addr = 127.0.0.1
+
+＃RADIUS消息的NAS-Identifier字符串。使用时，它应该是唯一的
+＃在RADIUS服务器范围内的NAS。请注意hostapd
+＃为每个BSS使用单独的RADIUS客户端，因此，唯一
+＃nas_identifier值应为每个BSS单独配置。这是
+＃对于使用RADIUS记帐的情况特别重要
+＃（Accounting-On / Off消息被解释为清除所有正在进行的会话
+＃，并且如果相同，可能会解释为适用于所有BSS
+＃使用NAS-Identifier值。）例如，一个完全限定的域名
+可以在此处使用带有BSS唯一标识符（例如BSSID）的＃号。
+＃
+＃使用IEEE 802.11r时，必须将nas_identifier设置为1至
+＃48个八位位组长。
+＃
+＃必须将own_ip_addr或nas_identifier配置为
+＃符合RADIUS协议。使用RADIUS记帐时，它是
+＃强烈建议将nas_identifier设置为每个值的唯一值
+＃BSS。
+＃nas_identifier = ap.example.com
+
+＃RADIUS客户端强制访问点的本地IP地址
+＃通常，本地IP地址是根据配置自动确定的
+＃IP地址，但是此字段可用于强制将特定地址设置为
+＃，例如，当设备具有多个IP地址时使用。
+＃radius_client_addr = 127.0.0.1
+
+＃RADIUS认证服务器
+＃auth_server_addr = 127.0.0.1
+＃auth_server_port = 1812
+＃auth_server_shared_secret =秘密
+
+＃RADIUS计费服务器
+＃acct_server_addr = 127.0.0.1
+＃acct_server_port = 1813
+＃acct_server_shared_secret =秘密
+
+＃备用RADIUS服务器；如果主要的人不回覆则使用
+＃RADIUS报文 这些是可选的，并且可以有多个中学
+＃列出的服务器。
+＃auth_server_addr = 127.0.0.2
+＃auth_server_port = 1812
+＃auth_server_shared_secret =秘密2
+＃
+＃acct_server_addr = 127.0.0.2
+＃acct_server_port = 1813
+＃acct_server_shared_secret =秘密2
+
+＃尝试返回主RADIUS服务器的重试间隔（以
+＃秒）。RADIUS客户端代码将自动尝试使用下一个服务器
+＃当前服务器未回复请求时。如果设置了此间隔，
+＃主服务器将在配置的时间后重试，即使
+＃当前使用的辅助服务器仍在工作。
+＃radius_retry_primary_interval = 600
+
+
+＃临时记帐更新间隔
+＃如果已设置（大于0）并且配置了acct_server，则hostapd将
+＃每N秒发送一次临时记帐更新。注意：如果设置，此设置将覆盖
+＃在Access-Accept消息中可能的Acct-Interim-Interval属性。因此，这
+如果使用RADIUS服务器，则不应在hostapd.conf中配置＃值
+＃控制过渡间隔。
+＃此值不得小于600（10分钟），且不得小于
+＃60（1分钟）。
+＃radius_acct_interim_interval = 600
+
+＃请求计费用户身份（RFC 4372）
+＃此参数可用于配置hostapd以从
+＃通过将Chargeable-User-Identity属性包含到RADIUS服务器中
+＃访问请求报文。
+＃radius_request_cui = 1
+
+＃动态VLAN模式；允许RADIUS身份验证服务器决定哪个VLAN
+＃用于站。此信息是从以下RADIUS解析的
+＃基于RFC 3580和RFC 2868的属性：隧道类型（值13 = VLAN），
+＃Tunnel-Medium-Type（值6 = IEEE 802），Tunnel-Private-Group-ID（值
+＃VLANID作为字符串）。（可选）本地MAC ACL列表（accept_mac_file）可以
+＃设置静态客户端的MAC地址到VLAN ID的映射关系。
+＃动态VLAN模式也用于基于WPA / WPA2的VLAN ID分配
+＃来自wpa_psk_file的密码短语或来自sae_password的vlan_id参数。
+＃0 =禁用（默认）；仅使用来自accept_mac_file的VLAN ID
+＃1 =可选；如果RADIUS服务器不包含VLAN ID，则使用默认接口
+＃2 =必需；如果RADIUS服务器不包含VLAN ID，则拒绝身份验证
+＃dynamic_vlan = 0
+
+＃每站AP_VLAN接口模式
+＃如果启用，则为每个工作站分配自己的AP_VLAN接口。
+＃这意味着STA间的每工作站组键控和ebtables过滤
+＃流量（通过AP时）。
+＃如果未将sta分配给任何VLAN，则其AP_VLAN接口将为
+＃添加到“ bridge”配置选项给定的桥中（请参见上文）。
+＃否则，它将被添加到每个VLAN网桥。
+＃0 =禁用（默认）
+＃1 =启用
+＃per_sta_vif = 0
+
+＃从单独的文本文件中读取动态VLAN模式的VLAN接口列表。
+＃此列表用于将RADIUS服务器的VLAN ID映射到网络
+＃接口。每个工作站以与以下相同的方式绑定到一个接口
+＃多个BSSID或SSID。此文本文件中的每一行都定义了一个新
+＃interface并且该行必须包含VLAN ID和接口名称，并用逗号分隔
+＃空白（空格或制表符）。
+＃如果此文件未提供任何条目，则工作站是静态映射的
+＃到<bss-iface>。<vlan-id>接口。
+＃每行还可以选择包含将VLAN添加到的网桥的名称
+＃vlan_file = / etc / hostapd.vlan
+
+＃RADIUS服务器在802.1q标签报文出现的接口
+＃用于确定工作站在哪个VLAN上。hostapd为
+＃每个VLAN。然后hostapd添加一个VLAN接口（与该接口关联）
+＃由“ vlan_tagged_interface”指示）和适当的无线接口
+＃到桥上。
+＃vlan_tagged_interface = eth0
+
+＃桥接（前缀）以添加wifi和带标签的接口。这得到了
+＃附加了VLAN ID。如果未提供标记的接口，则默认为brvlan％d
+＃和br％s。％d（如果提供了标记的接口），前提是％s =标记的接口
+＃和％d = VLAN ID。
+＃vlan_bridge = brvlan
+
+＃hostapd在vlan_tagged_interfaces上创建VLAN接口时，需要
+＃知道如何命名。
+＃0 = vlan <XXX>，例如vlan1
+＃1 = <vlan_tagged_interface>。<XXX>，例如eth0.1
+＃vlan_naming = 0
+
+＃可以将任意RADIUS属性添加到Access-Request和
+＃通过以下方式指定属性的内容来计费请求数据包
+＃以下配置参数。这些可以有多个
+＃添加多个属性。这些参数也可以用来覆盖一些
+＃由hostapd自动添加的属性。
+＃格式：<attr_id> [：<语法：值>]
+＃attr_id：RADIUS属性类型（例如26 =特定于供应商）
+＃语法：s =字符串（UTF-8），d =整数，x =八位字节串
+＃value：语法指示的格式的属性值
+＃如果省略语法和值部分，则为空值（单个0x00八位位组）
+＃ 用过的。
+＃
+＃其他访问请求属性
+＃radius_auth_req_attr = <attr_id> [：<语法：值>]
+＃ 例子：
+＃操作员名称=“操作员”
+＃radius_auth_req_attr = 126：s：操作员
+＃服务类型=框架（2）
+＃radius_auth_req_attr = 6：d：2
+＃Connect-Info =“ testing”（这将覆盖自动生成的值）
+＃radius_auth_req_attr = 77：s：测试
+＃将相同的Connect-Info值设置为十六进制转储
+＃radius_auth_req_attr = 77：x：74657374696e67
+
+＃
+＃其他计费请求属性
+＃radius_acct_req_attr = <attr_id> [：<语法：值>]
+＃ 例子：
+＃操作员名称=“操作员”
+＃radius_acct_req_attr = 126：s：操作员
+
+＃如果包括SQLite支持，则为数据库的路径
+＃根据站点的MAC地址提取RADIUS请求属性。
+＃
+＃radius_attributes表的架构为：
+＃id | sta | reqtype | attr：多键（sta，reqtype）
+＃id =自动编号
+＃sta =以`11：22：33：44：55：66`格式的工作站MAC地址。
+＃type =`auth` | `acct` | NULL（任意匹配）
+＃attr =现有的配置文件格式，例如`126：s：Test Operator`
+＃radius_req_attr_sqlite = radius_attr.sqlite
+
+＃动态授权扩展（RFC 5176）
+＃此机制可用于允许基于以下内容动态更改用户会话
+来自RADIUS服务器（或具有
+＃个需要的会话信息）。例如，“断开连接”消息可用于
+＃请求关联的工作站断开连接。
+＃
+＃默认情况下处于禁用状态。将radius_das_port设置为非零UDP端口
+＃号启用。
+＃radius_das_port = 3799
+＃
+＃DAS客户端（可以发送Disconnect / CoA请求的主机）和共享密钥
+＃格式：<IP地址> <共享机密>
+＃IP地址0.0.0.0可用于允许来自任何地址的请求。
+＃radius_das_client = 192.168.1.123此处共享的秘密
+＃
+＃DAS事件时间戳记时间窗口（以秒为单位）
+＃radius_das_time_window = 300
+＃
+＃DAS需要事件时间戳
+＃radius_das_require_event_timestamp = 1
+＃
+＃DAS需要Message-Authenticator
+＃radius_das_require_message_authenticator = 1
+
+##### RADIUS身份验证服务器配置##############################
+
+＃hostapd可用作其他主机的RADIUS身份验证服务器。这个
+＃要求还启用集成EAP服务器，并且两者都
+＃身份验证服务共享相同的配置。
+
+＃RADIUS服务器的RADIUS客户端配置文件名。如果这
+＃注释掉，RADIUS服务器被禁用。
+＃radius_server_clients = / etc / hostapd.radius_clients
+
+＃RADIUS认证服务器的UDP端口号
+＃radius_server_auth_port = 1812
+
+＃RADIUS计费服务器的UDP端口号
+＃将其注释掉或将其设置为0可用于禁用RADIUS
+＃记帐，同时仍启用RADIUS身份验证。
+＃radius_server_acct_port = 1813
+
+＃将IPv6与RADIUS服务器一起使用（使用IPv6 API也将支持IPv4）
+＃radius_server_ipv6 = 1
+
+
+##### WPA / IEEE 802.11i配置###################################### ###
+
+＃启用WPA。设置此变量会将AP配置为要求WPA（
+＃WPA-PSK或WPA-RADIUS / EAP（基于其他配置）。对于WPA-PSK，
+＃必须设置wpa_psk或wpa_passphrase，并且wpa_key_mgmt必须包含WPA-PSK。
+＃wpa_psk_radius可能足以满足wpa_psk / wpa_passphrase的要求。
+＃对于WPA-RADIUS / EAP，必须设置ieee8021x（但没有动态WEP密钥），
+＃必须配置RADIUS身份验证服务器，并且必须包含WPA-EAP
+＃在wpa_key_mgmt中。
+＃此字段是可用于启用WPA（IEEE 802.11i / D3.0）的位字段
+＃和/或WPA2（完整的IEEE 802.11i / RSN）：
+＃bit0 = WPA
+＃bit1 = IEEE 802.11i / RSN（WPA2）（dot11RSNAEnabled）
+＃请注意，WPA3也使用bit1进行配置，因为它与WPA2一样使用RSN。
+＃换句话说，对于WPA3，wpa = 2用于配置（并且
+＃wpa_key_mgmt =用于WPA3-个人的SAE，而不是wpa_key_mgmt = WPA-PSK）。
+＃wpa = 2
+
+＃WPA-PSK的WPA预共享密钥。可以输入为256位
+＃秘密（以十六进制格式（64个十六进制数字），wpa_psk或ASCII密码）
+＃（8..63个字符），将转换为PSK。此转换使用SSID
+＃，因此当使用ASCII密码短语和更改SSID时，PSK也会更改。
+＃wpa_psk（dot11RSNAConfigPSKValue）
+＃wpa_passphrase（dot11RSNAConfigPSKPassPhrase）
+＃wpa_psk = 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+＃wpa_passphrase =秘密密码
+
+＃（可选）可以从单独的文本文件（包含列表）中读取WPA PSK
+（PSK，MAC地址）对的数量。这允许配置多个PSK。
+＃使用绝对路径名确保可以在SIGHUP上读取文件
+＃配置重新加载。
+＃wpa_psk_file = / etc / hostapd.wpa_psk
+
+＃（可选）可以从RADIUS身份验证服务器接收WPA密码
+＃这需要将macaddr_acl设置为2（RADIUS）
+＃0 =禁用（默认）
+＃1 =可选；如果RADIUS服务器不包括默认密码/ psk
+＃隧道密码
+＃2 =必需；如果RADIUS服务器不包含身份验证，则拒绝身份验证
+＃隧道密码
+＃wpa_psk_radius = 0
+
+＃一组接受的密钥管理算法（WPA-PSK，WPA-EAP或两者）。的
+＃个条目用空格分隔。WPA-PSK-SHA256和WPA-EAP-SHA256可以是
+＃添加以启用基于SHA256的更强算法。
+＃WPA-PSK = WPA-个人/ WPA2-个人
+＃WPA-PSK-SHA256 =使用SHA256的WPA2-个人
+＃WPA-EAP = WPA-企业版/ WPA2-企业
+＃WPA-EAP-SHA256 =使用SHA256的WPA2-Enterprise
+＃SAE = SAE（WPA3-个人）
+＃WPA-EAP-SUITE-B-192 =具有192位安全性/ CNSA套件的WPA3-Enterprise
+＃FT-PSK =带有密码短语/ PSK的FT
+＃FT-EAP =使用EAP的FT
+＃FT-EAP-SHA384 =使用SHA384的FT与EAP
+＃FT-SAE =带有SAE的FT
+＃FILS-SHA256 =使用SHA256进行快速初始链接设置
+＃FILS-SHA384 =使用SHA384进行快速初始链接设置
+＃FT-FILS-SHA256 =使用SHA256进行FT和快速初始链接设置
+＃FT-FILS-SHA384 =使用SHA384进行FT和快速初始链接设置
+＃OWE =机会无线加密（又名增强开放）
+＃DPP =设备配置协议
+＃OSEN =具有加密功能的Hotspot 2.0在线注册
+＃（dot11RSNAConfigAuthenticationSuitesTable）
+＃wpa_key_mgmt = WPA-PSK WPA-EAP
+
+＃接受成对密钥的密码套件（加密算法）的集合
+＃（单播数据包）。这是用空格分隔的算法列表：
+＃CCMP =带有CBC-MAC的计数器模式下的AES（CCMP-128）
+＃TKIP =时间密钥完整性协议
+＃CCMP-256 =计数器模式下的AES，带有256位密钥的CBC-MAC
+＃GCMP = Galois /计数器模式协议（GCMP-128）
+＃GCMP-256 =带有256位密钥的Galois /计数器模式协议
+＃组密码套件（广播和多播帧的加密算法）
+＃根据此配置自动选择。如果仅CCMP是
+＃允许作为成对密码，组密码也将为CCMP。除此以外，
+＃TKIP将用作组密码。可选的group_cipher参数可以
+＃用于覆盖此自动选择。
+＃
+＃（dot11RSNAConfigPairwiseCiphersTable）
+＃WPA（v1）的成对密码（默认值：TKIP）
+＃wpa_pairwise = TKIP CCMP
+＃RSN / WPA2的成对密码（默认值：使用wpa_pairwise值）
+＃rsn_pairwise = CCMP
+
+＃自动组密码选择的可选替代
+＃不管选择哪种密码，都可以用来选择特定的组密码
+为WPA和RSN启用了＃对密码。应该注意的是
+＃使用意外值覆盖组密码可能会导致
+＃互操作性问题，通常，此参数主要用于
+＃测试目的。
+＃group_cipher = CCMP
+
+＃在以下时间间隔内重新输入GTK（广播/多播加密密钥）的时间间隔
+＃秒。（dot11RSNAConfigGroupRekeyTime）
+＃使用CCMP / GCMP作为默认值时，默认为86400秒（每天一次）
+＃使用TKIP作为组密码和600秒（每10分钟一次）
+＃组密码。
+＃wpa_group_rekey = 86400
+
+＃当拥有当前GTK的任何STA离开BSS时，重新密钥GTK。
+＃（dot11RSNAConfigGroupRekeyStrict）
+＃wpa_strict_rekey = 1
+
+＃RSN组密钥握手中EAPOL-Key消息1/2的次数为
+＃根据GTK握手尝试重试。（dot11RSNAConfigGroupUpdateCount）
+＃仅当电台持续运行时才应增加此值
+＃在GTK密钥更新期间使用日志消息取消身份验证
+＃“组密钥握手失败...”。
+＃您应该考虑然后再增加wpa_pairwise_update_count。
+＃范围1..4294967295; 默认值：4
+＃wpa_group_update_count = 4
+
+＃密钥更新GMK的时间间隔（主密钥在内部用于生成GTK
+＃ （很快）。
+＃wpa_gmk_rekey = 86400
+
+＃PTK的最大生存时间（以秒为单位）。这可以用于强制重新输入
+＃PTK可以减轻针对TKIP缺陷的一些攻击。
+＃wpa_ptk_rekey = 600
+
+＃RSN 4-Way中EAPOL-Key消息1/4和消息3/4的次数
+＃4次握手尝试重试一次握手。
+＃（dot11RSNAConfigPairwiseUpdateCount）
+＃范围1..4294967295; 默认值：4
+＃wpa_pairwise_update_count = 4
+
+＃密钥重新安装攻击的解决方法
+＃
+＃此参数可用于禁止重传EAPOL-Key帧
+＃用于安装密钥（EAPOL-密钥消息3/4和组消息1/2）。这个
+＃与设置wpa_group_update_count = 1类似，并且
+＃wpa_pairwise_update_count = 1，但不影响消息1/4，并且
+＃延长响应的超时时间，以免引起以下问题：
+＃可能会使用积极的节电功能来回复很长的时间
+＃EAPOL键消息。
+＃
+＃此选项可用于解决对主机进行的密钥重新安装攻击
+＃站（请求方）端，如果这些站设备无法更新
+＃ 因为某些原因。通过删除重传，攻击者无法造成
+＃延迟帧传输重新安装密钥。这与
+＃站点端漏洞CVE-2017-13077，CVE-2017-13078，CVE-2017-13079，
+＃CVE-2017-13080和CVE-2017-13081。
+＃
+＃此解决方法可能会导致互操作性问题并降低健壮性
+＃关键协商，尤其是在由于
+＃减少执行密钥交换的尝试次数。如
+＃这样，此替代方法默认情况下处于禁用状态（除非在构建中被覆盖
+＃配置）。要启用此功能，请将参数设置为1。
+＃wpa_disable_eapol_key_retries = 1
+
+＃启用IEEE 802.11i / RSN / WPA2预认证。这是用来加快
+＃漫游是对完整RSN的IEEE 802.1X / EAP部分进行预身份验证
+在实际与新AP关联之前，先进行＃身份验证和密钥握手。
+＃（dot11RSNAPreauthenticationEnabled）
+＃rsn_preauth = 1
+＃
+＃用空格分隔的列表，其中包含预身份验证帧
+＃已接受（例如'eth0'或'eth0 wlan0wds0'。此列表应包括所有
+＃用于连接其他AP的接口。这可能包括
+＃有线接口和WDS链接。普通的无线数据接口走向
+＃不应该添加关联的站点（例如，wlan0），因为
+＃预身份验证仅用于当前关联的AP以外的AP
+＃一
+＃rsn_preauth_interfaces = eth0
+
+＃ieee80211w：是否启用管理帧保护（MFP）
+＃0 =禁用（默认）
+＃1 =可选
+＃2 =必填
+＃ieee80211w = 0
+
+＃组管理密码套件
+＃默认：AES-128-CMAC（BIP）
+＃其他选项（取决于驱动程序支持）：
+＃BIP-GMAC-128
+＃BIP-GMAC-256
+＃BIP-CMAC-256
+＃注意：所有连接到BSS的站点也将需要支持
+＃个选定的密码。默认的AES-128-CMAC是通常唯一的选项
+＃在已部署的设备中可用。
+＃group_mgmt_cipher = AES-128-CMAC
+
+＃关联SA查询最大超时（以TU = 1.024 ms；对于MFP）
+＃（等待SA查询响应的最长时间）
+＃dot11AssociationSAQueryMaximumTimeout，1 ... 4294967295
+＃assoc_sa_query_max_timeout = 1000
+
+＃关联SA查询重试超时（以TU = 1.024 ms；对于MFP）
+＃（两个后续SA查询请求之间的时间）
+＃dot11AssociationSAQueryRetryTimeout，1 ... 4294967295
+＃assoc_sa_query_retry_timeout = 201
+
+＃ocv：操作通道验证
+＃这是针对多渠道中间人攻击的对策。
+＃自动启用此功能也会启用ieee80211w（如果尚未启用）。
+＃0 =禁用（默认）
+＃1 =启用
+＃ocv = 1
+
+＃disable_pmksa_caching：禁用PMKSA缓存
+＃此参数可用于禁用通过EAP创建的PMKSA的缓存
+＃身份验证。如果出现以下情况，RSN预身份验证仍可能使用PMKSA缓存结束
+＃已启用（rsn_preauth = 1）。
+＃0 =启用PMKSA缓存（默认）
+＃1 =禁用PMKSA缓存
+＃disable_pmksa_caching = 0
+
+＃okc：机会密钥缓存（也称为主动密钥缓存）
+＃允许在已配置的接口之间机会共享PMK缓存
+＃和BSS（即，单个hostapd进程中的所有配置）。
+＃0 =禁用（默认）
+＃1 =启用
+＃okc = 1
+
+＃SAE密码
+＃该参数可用于设置SAE的密码。默认情况下，
+如果未使用此单独的参数，则使用＃wpa_passphrase值，但是
+＃wpa_passphrase遵循WPA-PSK约束（8..63个字符），即使
+＃SAE密码没有这样的约束。如果BSS同时启用了SAE和
+＃WPA-PSK和两个值都已设置，SAE使用sae_password值和WPA-PSK
+＃使用wpa_passphrase值。
+＃
+＃每个sae_password条目都添加到可用密码列表中。这个
+＃对应于dot11RSNAConfigPasswordValueEntry。sae_password值
+＃以密码（dot11RSNAConfigPasswordCredential）开头。该值可以
+＃后跟可选的对等MAC地址（dot11RSNAConfigPasswordPeerMac）和
+＃由可选密码标识符（dot11RSNAConfigPasswordIdentifier）组成。在
+＃另外，可以使用可选的VLAN ID规范来绑定工作站
+每当使用特定的SAE密码条目时，将＃设置为指定的VLAN。
+＃
+＃如果不包括对端MAC地址或将其设置为通配符地址
+＃（ff：ff：ff：ff：ff：ff：ff），该条目可供任何工作站使用。如果一个
+＃包括特定的对等MAC地址，仅具有该MAC地址的站点
+＃允许使用该条目。
+＃
+＃如果包含密码标识符（长度不为零），则输入为
+＃仅限与指定的标识符一起使用。
+
+＃最后一个匹配项（基于对等MAC地址和标识符）用于
+＃选择要使用的密码。将sae_password设置为空字符串有一个
+＃删除所有先前添加的条目的特殊含义。
+＃
+＃sae_password使用以下编码：
+＃<密码/凭据> [| mac = <对等mac>] [| vlanid = <VLAN ID>] [| id = <标识符>]
+＃ 例子：
+＃sae_password =秘密
+＃sae_password =真正的秘密| mac = ff：ff：ff：ff：ff：ff：ff
+＃sae_password = example secret | mac = 02：03：04：05：06：07 | id = pw标识符
+＃sae_password =示例机密| vlanid = 3 | id = pw标识符
+
+＃防阻塞机制的SAE阈值（dot11RSNASAEAntiCloggingThreshold）
+＃此参数定义在站点上可以进行多少个打开的SAE实例。
+＃在使用防堵塞机制之前的同一时间。
+＃sae_anti_clogging_threshold = 5
+
+＃最大SAE同步错误数（dot11RSNASAESync）
+＃如果有问题的SAE对等体超过此数目，则将断开连接
+＃发生同步错误。
+＃sae_sync = 5
+
+＃启用SAE有限循环组
+需要＃SAE实施来支持第19组（在
+＃256位素数订单字段）。此配置参数可用于
+＃指定一组允许的组。如果不包括在内，则仅强制性组19
+＃已启用。
+＃组值在IANA注册表中列出：
+＃http://www.iana.org/assignments/ipsec-registry/ipsec-registry.xml#ipsec-registry-9
+＃请注意，第1、2、5、22、23和24组不应在生产中使用
+＃目的是由于有限的安全性（请参阅RFC 8247）。强度不如
+＃19组（ECC，NIST P-256）不太可能用于生产用例
+＃因为所有实施都必须支持第19组。
+＃sae_groups = 19 20 21
+
+＃对于使用SAE的所有关联都需要MFP
+＃此参数可用于强制所有关联的MFP协商
+＃协商使用SAE。此功能用于支持SAE的设备
+＃已知具有MFP功能，并且BSS配置有可选的MFP
+＃（ieee80211w = 1）可获得旧版支持。非SAE站可以连接而无需
+如果sae_require_mfp = 1，则需要SAE站点协商MFP的＃MFP。
+＃sae_require_mfp = 0
+
+＃SAE确认行为
+＃默认情况下，AP将仅发送SAE Commit消息作为对收到的响应
+＃SAE提交消息。可以将此参数设置为1以覆盖该行为
+＃发送SAE提交和SAE确认消息，而无需等待STA
+＃首先发送其SAE确认消息。
+＃sae_confirm_immediate = 0
+
+＃用于PWE派生的SAE机制
+＃0 =仅狩猎和啄食循环（默认）
+＃1 =仅哈希到元素
+＃2 =启用了“狩猎和啄”循环以及“哈希到元素”功能
+＃注意：新的默认值可能会从0更改为2
+＃哈希到元素机制已接受了更多的互操作性测试。
+＃sae_pwe = 0
+
+＃FILS缓存标识符（十六进制转储格式的16位值）
+＃fils_cache_id = 0011
+
+＃FILS领域信息
+＃启用FILS时，需要配置一个或多个FILS领域。这个清单
+领域数用于定义哪些领域（客户端在keyName-NAI中使用）
+＃可以与针对ERP的FILS共享密钥身份验证一起使用。
+＃fils_realm = example.com
+＃fils_realm = example.org
+
+＃FILS DH Group for PFS
+＃0 =通过FILS共享密钥身份验证禁用PFS（默认）
+＃1-65535 DH组用于FILS PFS
+＃fils_dh_group = 0
+
+＃OWE DH组
+＃OWE实施需要支持第19组（NIST P-256）。所有团体
+实施支持的＃号（例如，组19、20和21
+＃使用OpenSSL）默认情况下处于启用状态。此配置参数可以是
+＃用于指定一组有限的允许组。列出组值
+在IANA注册中心中的＃：
+＃http://www.iana.org/assignments/ipsec-registry/ipsec-registry.xml#ipsec-registry-10
+＃owe_groups = 19 20 21
+
+＃OWE过渡模式配置
+＃指向匹配的open / OWE BSS的指针
+＃owe_transition_bssid = <bssid>
+＃SSID格式与上述ssid2相同。
+＃owe_transition_ssid = <SSID>
+＃另外，OWE转换模式BSSID / SSID可以配置为
+＃引用此hostapd进程操作的BSS。
+＃owe_transition_ifname = <ifname>
+
+＃FILS HLP的DHCP服务器
+＃如果配置，hostapd将充当所有FILS HLP请求的DHCP中继
+＃包含DHCPDISCOVER消息并将其发送到特定的DHCP
+＃服务器进行处理。然后hostapd将等待该服务器的响应
+＃在用（Re）Association Response框架进行回复之前将其封装
+＃DHCP响应。own_ip_addr用作通信的本地地址
+＃与DHCP服务器一起使用。
+＃dhcp_server = 127.0.0.1
+
+＃DHCP服务器UDP端口
+＃默认：67
+＃dhcp_server_port = 67
+
+＃本地设备上的DHCP中继UDP端口
+＃默认：67; 0表示不绑定任何特定端口
+＃dhcp_relay_port = 67
+
+＃DHCP快速提交代理
+＃如果设置为1，这将使hostapd充当DHCP快速提交代理的角色
+＃允许将快速提交选项（两个消息DHCP交换）与
+＃仅支持四个消息DHCP交换的服务器。这被禁用
+＃默认值（= 0），可以通过将其设置为1来启用。
+＃dhcp_rapid_commit_proxy = 0
+
+＃TU中FILS HLP的等待时间（dot11HLPWaitTime）
+＃默认：30 TU（= 30.72毫秒）
+＃fils_hlp_wait_time = 30
+
+##### IEEE 802.11r配置######################################### #####
+
+＃移动域标识符（dot11FTMobilityDomainID，MDID）
+＃MDID用于指示一组AP（在ESS内，即共享
+＃相同的SSID），STA可在其之间使用快速BSS过渡。
+＃2个八位字节的标识符，为十六进制字符串。
+＃mobility_domain = a1b2
+
+＃PMK-R0密钥持有者标识符（dot11FTR0KeyHolderID）
+＃1至48个八位位组标识符。
+＃使用nas_identifier进行配置（请参阅上面的RADIUS客户端部分）。
+
+＃PMK-R0的默认生存时间（以秒为单位）；范围60..4294967295
+＃（默认值：14天/ 1209600秒； 0 =禁用超时）
+＃（dot11FTR0KeyLifetime）
+＃ft_r0_key_lifetime = 1209600
+
+＃PMK-R1的最大使用寿命；仅当不为零时应用
+＃PMK-R1最晚在此限制之后删除。
+＃通过将其设置为-1，可以禁止删除任何已到期的PMK-R1。
+＃（默认值：0）
+＃r1_max_key_lifetime = 0
+
+＃PMK-R1密钥持有者标识符（dot11FTR1KeyHolderID）
+＃6个八位字节的标识符，为十六进制字符串。
+＃默认为BSSID。
+＃r1_key_holder = 000102030405
+
+＃重新关联的最后期限以时间单位（TUs / 1.024 ms;范围1000..65535）
+＃（dot11FTReassociationDeadline）
+＃reassociation_deadline = 1000
+
+＃同一移动域中的R0KH列表
+＃格式：<MAC地址> <NAS标识符> <256位密钥作为十六进制字符串>
+＃此列表用于将R0KH-ID（NAS标识符）映射到目标MAC
+＃在STA期间从STA使用的R0KH请求PMK-R1密钥时的地址
+＃初始移动域关联。
+＃r0kh = 02：01：02：03：04：05 r0kh-1.example.com 000102030405060708090a0b0c0d0e0f000102030405060708090a0b0c0d0e0f
+＃r0kh = 02：01：02：03：04：06 r0kh-2.example.com 00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff
+＃依此类推..每个R0KH一行。
+＃通配符输入：
+＃收到R0KH的回复后，它将添加到此列表中，因此
+＃后续请求不会被广播。如果R0KH没有回复，它将是
+＃黑名单。
+＃r0kh = ff：ff：ff：ff：ff：ff：ff * 00112233445566778899aabbccddeeff
+
+＃同一移动域中的R1KH列表
+＃格式：<MAC地址> <R1KH-ID> <256位密钥作为十六进制字符串>
+＃发送时，此列表用于将R1KH-ID映射到目标MAC地址
+＃R0KH中的PMK-R1键。这也是MD中授权的R1KH的列表
+＃可以请求PMK-R1密钥。
+＃r1kh = 02：01：02：03：04：05 02：11：22：33：44：55 000102030405060708708090a0b0c0d0e0f000102030405060708090090a0b0c0d0e0f
+＃r1kh = 02：01：02：03：04：06 02：11：22：33：44：66 00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff
+＃依此类推..每个R1KH一行。
+＃通配符输入：
+＃收到来自未知的R1KH的请求后，它将被添加到此请求中
+＃list，因此将接收推送通知。
+＃r1kh = 00：00：00：00：00：00 00：00：00：00：00：00 00112233445566778899aabbccddeeff
+
+＃新发现的R0KH / R1KH的超时（秒）（请参阅上面的通配符条目）
+＃特殊值：0->不过期
+＃警告：“不缓存”表示不对通配符进行序列号验证
+＃rkh_pos_timeout = 86400（默认= 1天）
+
+＃使用PULL请求从R0KH请求PMK-R1的超时（毫秒）
+重试次数和次数。
+＃rkh_pull_timeout = 1000（默认= 1秒）
+＃rkh_pull_retries = 4（默认）
+
+＃不回复R0KH的超时时间（秒）（请参阅上面的通配符条目）
+＃特殊值：0->不缓存
+＃默认：60秒
+＃rkh_neg_timeout = 60
+
+＃注意：R0KH / R1KH键以前在消息前为128位长
+＃格式已更改。仍然支持较短的密钥长度，以便向后
+＃配置文件的兼容性。如果使用了这样一个较短的密钥，
+＃256位密钥是从中派生的。对于新部署，请配置256位
+建议使用＃键。
+
+＃是否在R0KH上启用了PMK-R1推送
+＃0 =不要将PMK-R1推入所有已配置的R1KH（默认）
+＃1 =每当派生新的PMK-R0时，将PMK-R1推入所有已配置的R1KH
+＃pmk_r1_push = 1
+
+＃是否启用FT-over-DS
+＃0 =禁用DS上的FT
+＃1 =启用DS上的FT（默认）
+＃ft_over_ds = 1
+
+＃是否在本地为PSK网络生成FT响应
+＃这样可以避免其他具有FT-PSK网络的AP使用PMK-R1推/拉
+＃所需的信息（PSK和其他会话数据）已经在本地
+＃个可用。
+＃0 =禁用（默认）
+＃1 =启用
+＃ft_psk_generate_local = 0
+
+#####邻居表########################################### ###############
+＃AP表中保留的最大条目数（对于neigbor表或
+＃检测重叠旧式BSS条件）。最旧的条目将是
+＃在添加新条目时删除，该条目将使列表超出此范围
+＃个限制。注意！IEEE 802.11g的WFA认证要求OLBC为
+＃启用，因此在使用IEEE 802.11g时不应将此字段设置为0。
+＃默认：255
+＃ap_table_max_size = 255
+
+＃没有收到帧的秒数，在此秒数之后可以删除条目
+＃在AP表中。由于被动扫描通常不经常执行
+＃不应将其设置为非常小的值。另外，没有
+＃保证每个扫描周期都会从接收到信标帧
+＃个相邻的AP。
+＃默认：60
+＃ap_table_expiration_time = 3600
+
+＃在操作频道上跟踪的最大电台数
+＃可用于在具备双频功能的电台之前检测它们
+＃关联，例如，提供有关使用哪个共置BSS的指南。
+＃默认值：0（禁用）
+＃track_sta_max_num = 100
+
+＃电台跟踪条目的最大年龄（以秒为单位）
+＃默认：180
+＃track_sta_max_age = 180
+
+＃不要回复在以下站点上看到的工作站的组寻址探测请求
+＃另一个收音机。
+＃默认：禁用
+＃
+＃可以与另一个启用的track_sta_max_num配置一起使用
+＃接口由同一hostapd进程控制以限制探测请求
+＃帧处理从答复到来自组地址的探查请求帧
+＃个已检测到可以在另一个频段上运行的电台，
+＃例如，在以下情况下尝试减少站点选择2.4 GHz BSS的可能性
+＃AP同时运行2.4 GHz和5 GHz BSS。
+＃
+＃注意：启用此选项可能会导致连接问题并增加延迟
+＃发现AP。
+＃no_probe_resp_if_seen_on = wlan1
+
+＃拒绝从另一个电台看到的电台进行身份验证。
+＃默认：禁用
+＃
+＃可以与另一个启用的track_sta_max_num配置一起使用
+＃由同一hostapd进程控制的接口拒绝身份验证
+来自已检测到能够在以下站点上运行的站点的＃次尝试
+＃另一个频段，例如，以尝试减少电台选择一个频段的可能性
+＃2.4 GHz BSS，当AP同时运行2.4 GHz和5 GHz BSS时。
+＃
+＃注意：启用此选项可能会导致连接问题并增加延迟
+＃与AP连接。
+＃no_auth_if_seen_on = wlan1
+
+##### Wi-Fi保护设置（WPS）##################################### ########
+
+＃WPS状态
+＃0 =禁用WPS（默认）
+＃1 =启用WPS，未配置
+＃2 =已启用WPS，已配置
+＃wps_state = 2
+
+＃是否独立于其他WPS接口独立管理此接口
+＃默认情况下，单个hostapd进程将WPS操作应用于所有已配置的
+＃接口。此参数可用于禁用子集的该行为
+接口数量。如果为接口将其设置为非零，则WPS命令
+在该接口上发布的＃不适用于其他接口和WPS操作
+在其他接口上执行的＃操作不会影响此接口。
+＃wps_independent = 0
+
+＃可以将AP配置为锁定状态，其中没有新的WPS注册器
+＃已接受，但先前已授权的注册服务商（包括内部注册服务商）
+＃可以继续添加新的参与者。
+＃ap_setup_locked = 1
+
+＃设备的通用唯一IDentifier（UUID;参见RFC 4122）
+＃此值用作内部WPS注册器的UUID。如果AP
+＃也在使用UPnP，此值应设置为设备的UPnP UUID。
+＃如果未配置，将根据本地MAC地址生成UUID。
+＃uuid = 12345678-9abc-def0-1234-56789abcdef0
+
+＃注意：如果设置了wpa_psk_file，则WPS用于生成随机的，基于设备的PSK
+＃将附加到wpa_psk_file。如果未设置wpa_psk_file，则
+＃默认PSK（wpa_psk / wpa_passphrase）将交付给注册人。用于
+建议将每个设备的PSK＃作为更安全的选项（例如，请确保
+＃将WPS与WPA-PSK一起使用时设置wpa_psk_file）。
+
+＃当注册者通过PIN方法请求访问网络时，该注册者
+需要为注册服务商输入＃PIN。PIN请求通知是
+＃发送到hostapd ctrl_iface监视器。此外，可以将它们写入
+＃可以使用的文本文件，例如，用于填充AP管理UI的文本文件
+＃个待处理的PIN请求。如果设置了以下变量，则PIN请求将
+＃写入配置文件。
+＃wps_pin_requests = / var / run / hostapd_wps_pin_requests
+
+＃ 设备名称
+＃设备的用户友好描述；以UTF-8编码的最多32个八位字节
+＃device_name =无线AP
+
+＃制造商
+＃设备的制造商（最多64个ASCII字符）
+＃manufacturer =公司
+
+＃ 型号名称
+＃设备型号（最多32个ASCII字符）
+＃model_name = WAP
+
+＃型号
+＃其他设备描述（最多32个ASCII字符）
+＃model_number = 123
+
+＃ 序列号
+＃设备的序列号（最多32个字符）
+＃serial_number = 12345
+
+＃主要设备类型
+＃使用的格式：<categ>-<OUI>-<subcateg>
+＃categ =类别为整数值
+＃OUI = OUI，并输入八位字节作为4字节的十六进制编码值；0050F204为
+＃默认WPS OUI
+＃subcateg =特定于OUI的Sub Category作为整数值
+＃ 例子：
+＃1-0050F204-1（计算机/ PC）
+＃1-0050F204-2（计算机/服务器）
+＃5-0050F204-1（存储/ NAS）
+＃6-0050F204-1（网络基础结构/ AP）
+＃device_type = 6-0050F204-1
+
+＃操作系统版本
+＃4个字节的操作系统版本号（十六进制字符串）
+＃os_version = 01020300
+
+＃配置方法
+＃支持的配置方法列表
+＃可用方法：usba以太网标签显示ext_nfc_token int_nfc_token
+＃nfc_interface按钮面板数字键盘virtual_display physical_display
+＃virtual_push_button physical_push_button
+＃config_methods =标签virtual_display virtual_push_button键盘
+
+＃Windows 7的PBC的WPS功能发现解决方法
+＃Windows 7通过采取错误的方式来确定AP的WPS功能
+＃作为注册商，并使用AP中的M1。其中的config methods属性
+＃消息应该仅指示受支持的配置方法
+＃以Enrollee角色的AP，即添加一个外部注册服务商。这样的话
+＃不得使用PBC，因此删除了PushButton config方法
+＃默认情况下来自M1。如果配置文件中包含pbc_in_m1 = 1，
+＃M1中保留了PushButton配置方法（如果包含在config_methods中）
+＃参数）以允许Windows 7使用PBC而不是PIN（例如，通过标签）
+＃在AP中）。
+＃pbc_in_m1 = 1
+
+＃用于初始配置和添加注册器的静态访问点PIN
+＃如果未设置，hostapd将不允许外部WPS注册商控制
+＃ 切入点。也可以在运行时使用hostapd_cli设置AP PIN
+＃wps_ap_pin命令。使用临时（由用户操作启用）和随机
+＃AP PIN比在此处配置静态AP PIN安全得多。因此，
+＃如果AP设备具有以下功能，则不建议使用ap_pin参数：
+＃显示一个随机PIN。
+＃ap_pin = 12345670
+
+＃跳过自动WPS凭证的构建
+＃这可用于允许自动生成的凭据属性
+＃替换为预配置的凭据。
+＃skip_cred_build = 1
+
+＃其他凭证属性
+＃此选项可用于将预配置的凭据属性添加到M8
+＃充当注册服务商时的消息。如果skip_cred_build = 1，则此数据还将
+＃能够覆盖原本可以的Credential属性
+＃根据网络配置自动生成。这个配置
+＃选项指向一个包含WPS凭据的外部文件
+＃个属性为二进制数据。
+＃extra_cred = hostapd.cred
+
+＃凭证处理
+＃0 =内部处理收到的凭据（默认）
+＃1 =不处理收到的凭据；只需将它们通过ctrl_iface传递给
+＃个外部程序
+＃2 =内部处理收到的凭据，并通过ctrl_iface传递它们
+＃到外部程序
+＃注意：在wps_cred_processing = 1的情况下，skip_cred_build应该设置为1，
+＃extra_cred用于为注册者提供凭据数据。
+＃
+＃wps_cred_processing = 1将禁用hostapd.conf文件的自动更新
+＃用于凭据处理和基于以下原因将AP设置标记为已锁定
+＃AP PIN验证失败。外部程序负责更新
+＃在这种情况下适当配置。
+＃wps_cred_processing = 0
+
+＃是否自动启用SAE（WPA3-个人转换模式）
+＃使用WPS收到的WPA2-PSK凭据。
+＃0 =仅添加显式列出的WPA2-PSK配置（默认）
+＃1 =同时添加WPA2-PSK和SAE配置并启用PMF，以便
+＃AP在WPA3-个人转换模式下配置（同时支持
+＃WPA2-个人（PSK）和WPA3-个人（SAE）客户端）。
+＃wps_cred_add_sae = 0
+
+＃M7的AP设置属性
+＃默认情况下，hostapd根据以下内容为M7生成AP设置属性：
+＃当前配置。可以通过提供一个文件来覆盖它
+＃具有预配置的属性。这类似于extra_cred文件格式，
+＃，但是AP设置属性未封装在凭据中
+＃属性。
+＃ap_settings = hostapd.ap_settings
+
+＃Multi-AP回传BSS配置
+＃在multi_ap = 2或3时在WPS中使用。定义“回程BSS”凭据。
+＃这些是在WPS M8中传递的，而不是常规（前传）凭证
+＃如果被注册者设置了Multi-AP子元素。回程SSID格式化
+＃像ssid2。密钥的设置类似于wpa_psk或wpa_passphrase。
+＃multi_ap_backhaul_ssid =“ backhaul”
+＃multi_ap_backhaul_wpa_psk = 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+＃multi_ap_backhaul_wpa_passphrase =秘密密码
+
+＃WPS UPnP接口
+＃如果设置，则启用对外部注册器的支持。
+＃upnp_iface = br0
+
+＃友好名称（UPnP必需）
+＃最终用途的简短说明。应少于64个字符。
+＃friendly_name = WPS接入点
+
+＃制造商URL（UPnP可选）
+＃manufacturer_url = http：//www.example.com/
+
+＃型号说明（推荐用于UPnP）
+＃最终用户的详细说明。应少于128个字符。
+＃model_description =无线访问点
+
+＃型号网址（UPnP可选）
+＃model_url = http：//www.example.com/model/
+
+＃通用产品代码（UPnP可选）
+＃12位全数字代码，用于标识消费者包装。
+＃upc = 123456789012
+
+＃WPS RF频段（a = 5G，b = 2.4G，g = 2.4G，ag =双频，ad = 60 GHz）
+＃如果满足以下条件，则应根据AP支持的RF频段设置此值
+＃未设置hw_mode。对于双频双并发设备，这需要
+＃设置为ag以允许两个RF波段都被广告。
+＃wps_rf_bands = ag
+
+＃WPS的NFC密码令牌
+＃这些参数可用于为服务器配置固定的NFC密码令牌
+＃AP。例如，可以使用wpa_supplicant的nfc_pw_token生成此文件。什么时候
+＃使用了这些参数，假定AP已部署了NFC标签
+＃包含匹配的NFC密码令牌（例如，根据
+＃来自nfc_pw_token的NDEF记录）。
+＃
+#wps_nfc_dev_pw_id：设备密码ID（16..65535）
+#wps_nfc_dh_pubkey：DH公钥的十六进制转储
+#wps_nfc_dh_privkey：DH私钥的十六进制转储
+#wps_nfc_dev_pw：设备密码的十六进制转储
+
+##### Wi-Fi Direct（P2P）###################################### ################
+
+＃启用P2P设备管理
+＃manage_p2p = 1
+
+＃允许交叉连接
+＃allow_cross_connection = 1
+
+#####设备配置协议（DPP）######################################
+
+＃注册人的DPP配置请求的名称
+＃dpp_name =测试
+
+＃注册人的DPP配置请求的MUD URL（可选）
+＃dpp_mud_url = https：//example.com/mud
+
+#dpp_connector
+#dpp_netaccesskey
+#dpp_netaccesskey_expiry
+#dpp_csign
+#dpp_controller
+
+#### TDLS（IEEE 802.11z-2010）##################################### ###########
+
+＃禁止在此BSS中使用TDLS
+＃tdls_prohibit = 1
+
+＃禁止在此BSS中使用TDLS频道切换
+＃tdls_prohibit_chan_switch = 1
+
+##### IEEE 802.11v-2011 ######################################## ###############
+
+＃时间广告
+＃0 =禁用（默认）
+＃2 = TSF计时器为0的UTC时间
+＃time_advertisement = 2
+
+＃IEEE Std 1003.1-2004 8.3中指定的本地时区：
+＃stdoffset [dst [offset] [，start [/ time]，end [/ time]]]
+＃time_zone = EST5
+
+＃WNM-休眠模式（工作站的扩展睡眠模式）
+＃0 =禁用（默认）
+＃1 =启用（允许工作站使用WNM休眠模式）
+＃wnm_sleep_mode = 1
+
+＃WNM-睡眠模式GTK / IGTK解决方法
+＃通常，通过协商管理帧保护的WNM休眠模式退出
+＃将导致当前的GTK / IGTK被添加到WNM-Sleep模式
+＃响应帧。某些工作站的实现可能存在一个漏洞，
+＃导致基于此帧的GTK / IGTK重新安装。这个
+＃配置参数可用于禁用该行为并使用EAPOL-Key
+＃GTK / IGTK的框架改为更新。这可能仅用于
+＃wpa_disable_eapol_key_retries = 1启用了解决类似问题的方法
+＃与EAPOL-Key。这与站方漏洞CVE-2017-13087有关
+＃和CVE-2017-13088。要启用此AP端解决方法，请将参数设置为1。
+＃wnm_sleep_mode_no_keys = 0
+
+＃BSS过渡管理
+＃0 =禁用（默认）
+＃1 =启用
+＃bss_transition = 1
+
+＃代理ARP
+＃0 =禁用（默认）
+＃1 =启用
+＃proxy_arp = 1
+
+＃IPv6邻居广告多播到单播转换
+＃可以与代理ARP一起使用，以允许将多播NA转发至
+＃使用链路层单播交付的关联STA。
+＃0 =禁用（默认）
+＃1 =启用
+＃na_mcast_to_ucast = 0
+
+##### IEEE 802.11u-2011 ######################################## ###############
+
+＃启用互通服务
+＃interworking = 1
+
+＃接入网络类型
+＃0 =专用网络
+＃1 =具有来宾访问权限的专用网络
+＃2 =收费的公共网络
+＃3 =免费公共网络
+＃4 =个人设备网络
+＃5 =仅紧急服务网络
+＃14 =测试或实验
+＃15 =通配符
+＃access_network_type = 0
+
+＃网络是否提供与Internet的连接
+＃0 =未指定
+＃1 =网络提供与Internet的连接
+＃internet = 1
+
+＃访问所需的附加步骤
+＃注意：仅在开放网络中使用，即，如果ASRA必须设置为0
+＃使用RSN。
+＃asra = 0
+
+＃紧急服务可达
+＃esr = 0
+
+＃可访问未经身份验证的紧急服务
+＃uesa = 0
+
+＃场地信息（可选）
+＃可用值在IEEE Std 802.11u-2011，7.3.1.34中定义。
+＃示例值（组，类型）：
+＃0,0 =未指定
+＃1,7 =会议中心
+＃1,13 =咖啡店
+＃2,0 =未指定业务
+＃7,1私人住宅
+＃venue_group = 7
+＃venue_type = 1
+
+＃同质ESS标识符（可选； dot11HESSID）
+＃如果设置，则应与同构中的BSSID之一相同
+＃ESS，并且在所有BSS中均应将其设置为相同的值
+＃ESS。
+＃hessid = 02：03：04：05：06：07
+
+＃漫游联盟列表
+＃每行可以配置任意数量的漫游联盟OI
+＃在列表中添加新的OI。前三个条目可通过以下方式获得
+＃信标和探测响应帧。任何其他条目将仅可用
+＃通过ANQP查询。每个OI在3到15个八位位组之间，并配置为
+＃十六进制字符串。
+＃roaming_consortium = 021122
+＃roaming_consortium = 2233445566
+
+＃场地名称信息
+＃此参数可用于配置一个或多个“场地名称”组
+＃地点名称ANQP信息。每个条目都有两种或三种字符的语言
+＃代码（ISO-639），以冒号与场地名称字符串分隔。
+＃请注意，必须为“场地名称”设置“ venue_group”和“ venue_type”
+＃要完成的信息。
+＃venue_name = eng：地点示例
+＃venue_name = fin：Esimerkkipaikka
+＃语言：值字符串的替代格式：
+＃（双引号字符串，printf转义的字符串）
+＃venue_name = P“ eng：Example \ nvenue”
+
+＃场地URL信息
+＃此参数可用于将一个或多个场地URL重复项配置为
+＃提供与场地名称信息相对应的附加信息。
+＃每个条目都有一个场地编号值，用冒号与场地URL分隔
+＃字符串。场地编号指示相应的场所名称条目（1 = 1st
+＃地点名称，2 =第二个地点名称，依此类推；0 =没有匹配的会场名称）
+＃venue_url = 1：http：//www.example.com/info-eng
+＃venue_url = 2：http：//www.example.com/info-fin
+
+＃网络身份验证类型
+＃此参数指示在网络中使用哪种类型的网络身份验证
+＃网络。
+＃格式：<网络身份验证类型指示器（1字节的十六进制str）> [重定向URL]
+＃网络认证类型指示符值：
+＃00 =接受条款和条件
+＃01 =支持在线注册
+＃02 = http / https重定向
+＃03 = DNS重定向
+＃network_auth_type = 00
+＃network_auth_type = 02http：//www.example.com/redirect/me/here/
+
+＃IP地址类型可用性
+＃格式：<1字节编码值（十六进制str>）
+＃（ipv4_type＆0x3f）<< 2 | （ipv6_type和0x3）
+＃ipv4_type：
+＃0 =地址类型不可用
+＃1 =可用的公共IPv4地址
+＃2 =可用端口限制的IPv4地址
+＃3 =单个NATed专用IPv4地址可用
+＃4 =可以使用双NAT私有IPv4地址
+＃5 =可用端口限制的IPv4地址和单个NATed IPv4地址
+＃6 =可用端口限制的IPv4地址和双NATed IPv4地址
+＃7 =地址类型的可用性未知
+＃ipv6_type：
+＃0 =地址类型不可用
+＃1 =地址类型可用
+＃2 =地址类型的可用性未知
+＃ipaddr_type_availability = 14
+
+＃域名
+＃格式：<variable-octet str> [，<variable-octet str>]
+＃domain_name = example.com，another.example.com，还另外another.example.com
+
+＃3GPP蜂窝网络信息
+＃格式：<MCC1，MNC1> [; <MCC2，MNC2>] [; ...]
+＃anqp_3gpp_cell_net = 244,91; 310,026; 234,56
+
+＃NAI领域信息
+＃可以发布一个或多个领域。每个nai_realm行都向其中添加一个新领域
+＃集合。这些参数为使用互通的站点提供信息
+＃网络选择，允许基于以下条件自动连接到网络
+＃个凭据。
+＃格式：<encoding>，<NAI领域> [，<EAP方法1>] [，<EAP方法2>] [，...]
+＃编码：
+＃0 =根据IETF RFC 4282格式化的领域
+＃1 =未格式化为UTF-8格式的字符串
+＃符合IETF RFC 4282
+＃NAI领域：以分号分隔的NAI领域
+＃EAP方法：<EAP方法> [：<[AuthParam1：Val1]>] [<[AuthParam2：Val2]>] [...]
+＃EAP方法类型，请参阅：
+＃http://www.iana.org/assignments/eap-numbers/eap-numbers.xhtml#eap-numbers-4
+＃AuthParam（IEEE标准802.11-2012中的表8-188）：
+＃ID 2 =非EAP内部身份验证类型
+＃1 = PAP，2 = CHAP，3 = MSCHAP，4 = MSCHAPV2
+＃ID 3 =内部身份验证EAP方法类型
+＃ID 5 =凭证类型
+＃1 = SIM，2 = USIM，3 = NFC安全元素，4 =硬件令牌，
+＃5 = Softoken，6 =证书，7 =用户名/密码，9 =匿名，
+＃10 =特定于供应商
+＃nai_realm = 0，example.com; example.net
+＃具有证书的EAP方法EAP-TLS和具有证书的EAP-TTLS / MSCHAPv2
+＃ 用户名密码
+＃nai_realm = 0，example.org，13 [5：6]，21 [2：4] [5：7]
+
+＃任意ANQP元素配置
+＃通过指定以下内容可以定义具有任意值的其他ANQP元素
+＃以原始格式将其内容作为有效载荷的十六进制转储。注意这些
+＃值将覆盖可能已在
+＃以上列出的更多高层配置参数。
+＃格式：anqp_elem = <InfoID>：<有效负载的十六进制转储>
+＃例如，未知位置的AP Geospatial Location ANQP元素：
+＃anqp_elem = 265：0000
+＃例如，未知位置的AP Civic Location ANQP元素：
+＃anqp_elem = 266：000000
+
+＃GAS地址3行为
+＃0 =默认启用P2P规范（Address3 = AP BSSID）解决方法
+＃根据GAS请求地址3
+＃1 =符合IEEE 802.11标准，与GAS请求地址3无关
+＃2 =强制不遵从行为（地址3 =所有情况下的AP BSSID）
+＃gas_address3 = 0
+
+＃QoS映射集配置
+＃
+＃以逗号分隔的QoS映射设置为十进制值
+＃（请参阅IEEE Std 802.11-2012，8.4.2.97）
+＃
+＃格式：
+＃[<DSCP异常[DSCP，UP]>，] <UP 0 range [low，high]>，... <UP 7 range [low，high]>
+＃
+＃最多可以有21个可选的DSCP异常，它们是DSCP值对
+＃（0..63或255）和用户优先级（0..7）。其次是八个DSCP范围
+＃的DSCP低值和DSCP高值对（0..63或255）的描述
+＃每个UP从0开始。如果低值和高值都设置为255，则
+＃不使用对应的UP。
+＃
+＃默认：未设置
+＃qos_map_set = 53,2,22,6,8,15,0,7,255,255,16,31,32,39,255,255,40,47,255,255
+
+#####热点2.0 ########################################### ##################
+
+＃启用Hotspot 2.0支持
+＃hs20 = 1
+
+＃禁用下行组地址转发（DGAF）
+＃这可用于配置没有组地址帧的网络
+＃允许。AP不会将任何组地址帧转发到站点，并且
+为每个站点发出＃个随机GTK，以防止关联站点
+＃将此类帧伪造到BSS中的其他站点。
+＃disable_dgaf = 1
+
+＃仅OSU服务器认证的L2加密网络
+＃osen = 1
+
+＃ANQP域ID（0..65535）
+＃共享相同的公共ANQP的ESS中的一组AP的标识符
+＃信息。0 =一些ANQP信息对此AP唯一（默认）。
+＃anqp_domain_id = 1234
+
+＃取消认证请求超时
+＃如果RADIUS服务器指示不允许该工作站连接到
+＃BSS / ESS，AP可以让站点有一段时间下载一个
+＃通知页面（消息中包含URL）。此参数设置为
+＃超时（以秒为单位）。
+＃hs20_deauth_req_timeout = 60
+
+＃运营商友好名称
+＃此参数可用于配置一个或多个操作员友好名称
+＃二元组。每个条目都有两个或三个字符的语言代码（ISO-639）
+＃用冒号与操作员友好名称字符串分隔。
+＃hs20_oper_friendly_name = eng：示例运算符
+＃hs20_oper_friendly_name = fin：Esimerkkioperaattori
+
+＃连接能力
+＃这可用于宣传可以通过哪种类型的IP流量发送
+＃热点（例如，由于防火墙允许/阻止协议/端口）。
+＃格式：<IP协议>：<端口号>：<状态>
+＃IP协议：1 = ICMP，6 = TCP，17 = UDP
+＃端口号：0..65535
+＃状态：0 =关闭，1 =打开，2 =未知
+＃每hs20_conn_capab行添加到已公布的元组列表中。
+＃hs20_conn_capab = 1：0：2
+＃hs20_conn_capab = 6：22：1
+＃hs20_conn_capab = 17：5060：0
+
+＃WAN指标
+＃格式：<WAN信息>：<DL速度>：<UL速度>：<DL负载>：<UL负载>：<LMD>
+＃WAN信息：B0-B1：链接状态，B2：对称链接，B3：有能力
+＃（编码为两个十六进制数字）
+＃链接状态：1 =链接断开，2 =链接断开，3 =链接处于测试状态
+＃下行速度：估计WAN回传链路当前下行速度，以kbps为单位；
+＃1..4294967295; 0 =未知
+＃上行速度：估计WAN回传链路当前的上行速度，以kbps为单位
+＃1..4294967295; 0 =未知
+＃下行负载：下行WAN连接的当前负载（缩放为255 = 100％）
+＃上行负载：上行WAN连接的当前负载（缩放为255 = 100％）
+＃负载测量持续时间：测量下行链路/上行链路负载的持续时间
+十分之一秒（1..65535）; 如果无法确定负载，则为0
+＃hs20_wan_metrics = 01：8000：1000：80：240：3000
+
+＃操作等级指示
+＃此ESS使用的BSS的操作类别列表。全球运营
+IEEE Std 802.11-2012附件E表E-4中的＃类定义了以下值：
+＃可以在此使用。
+＃格式：操作类八位字节的十六进制转储
+＃例如，操作等级81（2.4 GHz通道1-13）和115（5 GHz）
+＃频道36-48）：
+＃hs20_operating_class = 5173
+
+＃条款和条件信息
+＃
+＃hs20_t_c_filename包含AP的条款和条件文件名
+＃表示在RADIUS访问请求消息中。
+＃hs20_t_c_filename =条款和条件
+＃
+＃hs20_t_c_timestamp包含AP的条款和条件时间戳
+＃表示在RADIUS访问请求消息中。通常，它包含数字
+自1970年1月1日UTC以来的秒数，该时间表示文件
+＃ 上一次更改。
+＃hs20_t_c_timestamp = 1234567
+＃
+＃hs20_t_c_server_url包含条款和条件服务器的模板
+＃URL。该模板用于为需要生成的STA生成URL。
+＃确认条款和条件。与其他hs20_t_c_ *参数不同，这是
+＃参数用于身份验证服务器，而不是AP。
+＃宏：
+＃@ 1 @ = STA的MAC地址（用冒号分隔的十六进制八位字节）
+＃hs20_t_c_server_url = https：//example.com/t_and_c？addr = @ 1 @＆ap = 123
+
+＃OSU和操作员图标
+＃<图标宽度>：<图标高度>：<语言代码>：<图标类型>：<名称>：<文件路径>
+＃hs20_icon = 32：32：eng：image / png：icon32：/tmp/icon32.png
+＃hs20_icon = 64：64：eng：image / png：icon64：/tmp/icon64.png
+
+＃OSU SSID（有关格式说明，请参见ssid2）
+＃这是用于所有列出的所有OSU提供程序的OSU连接的SSID。
+＃osu_ssid =“ example”
+
+＃OSU提供者
+＃一组或多组以下参数。每个OSU提供者都由
+＃必需的osu_server_uri项目。其他参数添加有关
+＃最后添加的OSU提供程序。osu_nai指定OSEN的OSU_NAI值
+使用独立OSU BSS时的＃身份验证。osu_nai2指定OSU_NAI
+OSN使用共享的BSS（单个SSID）时，OSEN身份验证的＃值。
+＃
+＃osu_server_uri = https：//example.com/osu/
+＃osu_friendly_name = eng：示例运算符
+＃osu_friendly_name = fin：Esimerkkipalveluntarjoaja
+#osu_nai=anonymous@example.com
+#osu_nai2=anonymous@example.com
+＃osu_method_list = 1 0
+＃osu_icon = icon32
+＃osu_icon = icon64
+＃osu_service_desc = eng：示例服务
+＃osu_service_desc = fin：Esimerkkipalveluja
+＃
+#osu_server_uri = ...
+
+＃操作员图标
+＃使用对hs20_icon条目的引用来指定操作员图标
+＃（名称子字段）。如果有的话，此信息会在
+＃操作员图标元数据ANQO元素。
+＃operator_icon = icon32
+＃operator_icon = icon64
+
+#####多频带操作（MBO）######################################## #######
+＃
+＃MBO已启用
+＃0 =禁用（默认）
+＃1 =启用
+＃mbo = 1
+＃
+＃蜂窝数据连接首选项
+＃0 =已排除-AP不想STA使用蜂窝数据连接
+＃1 = AP希望STA不要使用蜂窝数据连接
+＃255 = AP首选STA使用蜂窝数据连接
+＃mbo_cell_data_conn_pref = 1
+
+#####优化连接体验（OCE）################################
+＃
+＃启用OCE特定功能（位图）
+＃BIT（0）-保留
+＃设置BIT（1）（= 2）以在STA-CFON模式下启用OCE
+＃设置BIT（2）（= 4）以在AP模式下启用OCE
+＃默认为0 =禁用OCE
+＃oce = 0
+
+＃基于RSSI的关联拒绝
+＃
+＃如果RSSI低于给定阈值（以dBm为单位），则拒绝STA关联
+＃允许范围：-60至-90 dBm；默认值= 0（禁用拒绝）
+＃注意：这种拒绝是根据在
+＃接收单个帧，因此存在很大的价值风险
+＃不够准确，导致有效电台被拒绝。如
+＃这样，不建议将此功能用于其他目的
+＃测试。
+＃rssi_reject_assoc_rssi = -75
+＃
+＃如果RSSI尚未达到标准，则STA允许的关联重试延迟（以秒为单位）
+＃阈值（范围：0..255，默认值为30）。
+＃rssi_reject_assoc_timeout = 30
+
+#####快速会话传输（FST）支持#####################################
+＃
+＃本节中的选项仅在构建配置时可用
+＃编译hostapd时设置了CONFIG_FST选项。他们允许这个界面
+＃成为FST设置的一部分。
+＃
+＃FST是会话在一个通道中从一个通道到另一个通道的传输
+＃相同或不同的频带。
+＃
+＃有关详细信息，请参阅IEEE Std 802.11ad-2012。
+
+＃接口所属的FST组的标识。
+＃fst_group_id = bond0
+
+＃FST组内的接口优先级。
+＃宣布更高的接口优先级意味着声明更多
+＃适用于FST开关。
+＃fst_priority在1..255范围内，其中1为最低优先级。
+＃fst_priority = 100
+
+＃该接口的默认LLT值（以毫秒为单位）。情况下使用的值
+＃在会话设置期间未提供任何值。默认值为50毫秒。
+＃fst_llt处于1..4294967范围内（由于规格限制，请参见10.32.2.2
+＃在状态之间转换）。
+＃fst_llt = 100
+
+#####无线电测量/位置######################################### ##
+
+＃LCI测量子元素的内容
+＃lci = <LCI报告的二进制数据的十六进制转储>
+
+＃位置市民测量子元素的内容
+＃civic = <位置市民报告的二进制数据的十六进制转储>
+
+＃通过无线电测量启用邻居报告
+＃rrm_neighbor_report = 1
+
+＃通过无线电测量启用信标报告
+＃rrm_beacon_report = 1
+
+＃发布精细定时测量（FTM）响应器功能
+＃此参数仅控制通过扩展功能元素进行的发布。
+＃实际功能在hostapd外部进行管理。
+＃ftm_responder = 0
+
+＃发布精细定时测量（FTM）启动器功能
+＃此参数仅控制通过扩展功能元素进行的发布。
+＃实际功能在hostapd外部进行管理。
+＃ftm_initiator = 0
+＃
+＃固定AP配置指示AP不会移动，因此位置数据
+＃可被视为始终保持最新状态。如果配置，将发送LCI数据
+＃作为无线电测量，即使请求不包含最长年龄元素
+＃允许发送此类数据。默认值：0
+＃stationary_ap = 0
+
+#####通话时间策略配置########################################## ＃
+
+＃设置广播策略的工作模式：
+＃0 =禁用（默认）
+＃1 =静态配置
+＃2 =每个BSS动态配置
+＃3 =每个BSS限制模式
+＃airtime_mode = 0
+
+＃间隔（以毫秒为单位）轮询内核以获取更新的工作站活动
+＃动态和极限模式
+＃airtime_update_interval = 200
+
+＃静态配置站点权重（airtime_mode = 1时）。内核默认
+＃重量是256；较大的通话时间份额设置为较高，较小的份额设置为较低。
+＃每个条目都是一个MAC地址，后跟一个权重。
+＃airtime_sta_weight = 02：01：02：03：04：05 256
+＃airtime_sta_weight = 02：01：02：03：04：06 512
+
+＃每BSS通话时间权重。在多BSS模式下，为每个BSS设置，hostapd将
+＃配置站点权重以强制BSS权重之间的正确比率
+＃取决于活动站的数量。不同之间的*比率*
+＃BSSes是重要的，而不是绝对数字。
+＃如果airtime_mode = 2或3，则必须为所有BSS设置＃，否则无效。
+＃airtime_bss_weight = 1
+
+＃是否应限制当前BSS（airtime_mode = 3时）。
+＃
+＃如果设置，则在当前BSS的情况下将应用BSS权重比
+＃将超过BSS权重比例定义的份额。例如，如果有两个BSS
+＃设置为相同的权重，其中一个设置为限制，则限制的BSS将获得
+＃不超过可用通话时间的一半，但如果非受限BSS有更多可用时间
+＃个有效的电台，*将*超过其可用容量的一半
+＃通话时间。
+＃airtime_bss_limit = 1
+
+##### EDMG支持########################################### #################
+＃
+＃在60 GHz频段的AP模式下启用EDMG功能。默认值为false。
+＃要为EDMG AP配置通道绑定，请使用下面的edmg_channel。
+＃如果设置了enable_edmg而未设置edmg_channel，则EDMG CB1将为
+＃配置。
+＃enable_edmg = 1
+＃
+＃在60 GHz频段为AP模式配置通道绑定。
+＃仅当设置enable_edmg时，此参数才相关。
+＃默认值为0（无通道绑定）。
+＃edmg_channel = 9
+
+#####测试选项########################################## ##############
+＃
+＃本节中的选项仅在构建配置时可用
+在编译hostapd时设置了＃选项CONFIG_TESTING_OPTIONS。他们允许
+＃测试某些原本难以重现的场景。
+＃
+＃忽略以给定的概率发送到hostapd的探测请求，必须是
+＃浮点数在[0，1）范围内。
+＃ignore_probe_probability = 0.0
+＃
+＃以给定的概率忽略身份验证帧
+＃ignore_auth_probability = 0.0
+＃
+＃以给定的概率忽略关联请求
+＃ignore_assoc_probability = 0.0
+＃
+＃以给定的概率忽略重新关联请求
+＃ignore_reassoc_probability = 0.0
+＃
+＃以给定的概率在GTK密钥EAPOL密钥帧中损坏密钥MIC
+＃corrupt_gtk_rekey_mic_probability = 0.0
+＃
+＃尽可能仅包括ECSA IE，而不包括CSA IE
+＃（需要通道开关操作等级）
+＃ecsa_ie_only = 0
+
+#####多个BSSID支持######################################### ########
+＃
+＃以上配置使用默认接口（wlan＃或多SSID VLAN
+＃个接口）。可以使用分隔符“ bss”添加其他BSSID
+＃为新BSS的数据包分配的默认接口名称。
+＃
+＃hostapd将基于以下的BSSID生成BSSID掩码：
+＃配置。hostapd将验证dev_addr和MASK == dev_addr。如果这是
+＃并非如此，必须在启动前更改无线电的MAC地址
+＃hostapd（ifconfig wlan0 hw ether <MAC地址>）。如果配置了BSSID
+＃每个辅助BSS，此限制不适用于hostapd和其他
+如果驱动程序支持，则可以使用＃个掩码（例如，在本地交换
+＃个管理位）
+＃
+＃BSSID按顺序分配给每个BSS，除非显式BSSID为
+使用“ bssid”参数指定的＃。
+＃如果指定了显式的BSSID，则必须这样选择：
+＃-产生覆盖它和dev_addr的有效MASK
+＃-与无线电的MAC地址不同
+＃-与任何其他明确指定的BSSID不同
+＃
+＃另外，'use_driver_iface_addr'参数可用于请求
+＃hostapd使用驱动程序自动生成的接口地址（例如，使用
+＃分配给设备的确切MAC地址）。
+＃
+＃并非所有驱动程序都支持多个BSS。确定的确切机制
+＃驱动程序功能是特定于驱动程序的。与当前（即最近
+＃内核）使用nl80211的驱动程序，可以使用“ iw list”检查此信息
+＃（搜索“有效的接口组合”）。
+＃
+＃请注意，hostapd使用为第一个BSS配置的一些值
+＃作为以下BSS的默认值。但是，建议所有
+＃BSS包括所有相关配置项的显式配置。
+＃
+＃bss = wlan0_0
+＃ssid = test2
+＃以上大部分项目都可以在这里使用（除了特定于无线电接口的内容
+＃个项目，例如频道）
+
+＃bss = wlan0_1
+＃bssid = 00：13：10：95：fe：0b
+＃...
